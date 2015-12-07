@@ -1,0 +1,16 @@
+// vim:ts=4:sw=4:et
+{
+    "border": "normal",
+    "floating": "auto_off",
+    "name": "Sublime Text",
+    "percent": 1,
+    "swallows": [
+       {
+       "class": "^Subl3$"
+       // "instance": "^sublime_text$"
+       // "title": "^\\~\\/\\.i3\\/ws\\.json\\ \\(floti\\)\\ \\-\\ Sublime\\ Text$"
+       }
+    ],
+    "type": "con"
+}
+

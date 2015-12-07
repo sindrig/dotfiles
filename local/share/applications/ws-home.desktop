@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Workspace: Home 
+Comment=Switch to workspace home 
+Path=/home/sindri/bin/
+Exec=ws-home

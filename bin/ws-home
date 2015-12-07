@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/usr/bin/xrandr --output HDMI1 --mode 1920x1080 --right-of eDP1
+i3-msg restart

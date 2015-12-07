@@ -1,0 +1,11 @@
+evolution &
+pidgin &
+
+google-chrome-stable &
+
+i3-sensible-terminal &
+i3-sensible-terminal &
+i3-sensible-terminal &
+i3-sensible-terminal &
+
+subl3 &
