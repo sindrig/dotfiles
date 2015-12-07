@@ -11,6 +11,11 @@ def main():
     if input('Would you like to continue? (y/n)') in 'yY':
         create_symlinks(to_create)
 
+NON_HIDDEN_FOLDERS = [
+    'bin'
+]
+
+
 def get_destination(src):
     hidden = True
     for fldr in NON_HIDDEN_FOLDERS:
