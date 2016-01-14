@@ -1,0 +1,2 @@
+#!/bin/sh
+i3lock -c 111111 -d -f -i ~/.i3/lock.png -t

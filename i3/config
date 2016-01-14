@@ -213,7 +213,7 @@ bindsym F12 exec /usr/lib/qt4/bin/qdbus org.mpris.MediaPlayer2.spotify /org/mpri
 bindsym Control+$mod+l mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
-    bindsym l exec --no-startup-id /usr/local/bin/lock, mode "default"
+    bindsym l exec --no-startup-id ~/.i3/lock, mode "default"
     bindsym s exec --no-startup-id i3exit suspend, mode "default"
     bindsym u exec --no-startup-id i3exit switch_user, mode "default"
     bindsym e exec --no-startup-id i3exit logout, mode "default"
@@ -287,7 +287,7 @@ exec --no-startup-id clipit
 exec --no-startup-id compton --config /home/sindri/.config/compton.conf
 # exec --no-startup-id start_conky_grey
 exec --no-startup-id start_conky_green
-exec --no-startup-id xautolock -time 10 -locker /usr/local/bin/lock
+exec --no-startup-id xautolock -time 10 -locker ~/.i3/lock
 exec xinput set-prop "TPPS/2 IBM TrackPoint" "Device Enabled" 0
 exec --no-startup-id syndaemon -Kkd -i 1
 
