@@ -12,9 +12,10 @@ DISCONNECT_CONFIRM_FILE = os.path.join(
 )
 
 AVAILABLE_CONNECTIONS = [
+    ('Tempo', 'ovpn'),
     ('Trackwell', 'ovpn'),
-    ('IKEA', 'ovpn'),
-    ('festi', 'vpnc')
+    # ('IKEA', 'ovpn'),
+    # ('festi', 'vpnc')
 ]
 
 

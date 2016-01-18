@@ -10,11 +10,11 @@
         {
             "border": "normal",
             "floating": "auto_off",
-            "name": "Evolution",
+            "name": "HipChat",
             "percent": 0.5,
             "swallows": [
                {
-               "class": "^Evolution$"
+               "class": "^HipChat$"
                }
             ],
             "type": "con"

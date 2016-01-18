@@ -1,4 +1,4 @@
-evolution &
+hipchat &
 pidgin &
 
 google-chrome-stable &

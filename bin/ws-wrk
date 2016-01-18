@@ -1,10 +1,11 @@
 #!/bin/bash
 
-/usr/bin/xrandr --output DP2-3 --mode 1920x1080 --right-of eDP1
-/usr/bin/xrandr --output DP2-2 --mode 1920x1080 --rotate left --right-of DP2-3
+xrandr --output DP2-1 --right-of eDP1 --mode 2560x1440
+xrandr --output DP2-2 --right-of DP2-1 --mode 2560x1440 --rotate left
+
 i3-msg restart
 sleep 1
-i3-msg "workspace 2; move workspace to output DP2-3"
-i3-msg "workspace 3; move workspace to output DP2-3"
+i3-msg "workspace 2; move workspace to output DP2-1"
+i3-msg "workspace 3; move workspace to output DP2-1"
 i3-msg "workspace 4; move workspace to output DP2-2"
 # /home/sindri/.i3/ws/wsw

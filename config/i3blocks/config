@@ -38,9 +38,16 @@ interval=5
 #
 # The battery instance defaults to 0.
 [battery]
+separator=false
 #label=BAT
 label=⚡
 #instance=1
+interval=30
+
+[battery]
+#label=BAT
+#label=⚡
+instance=1
 interval=30
 
 # CPU usage
@@ -101,6 +108,9 @@ interval=30
 label=
 #instance=/mnt/data
 interval=30
+
+[keyboardlayout]
+command=/usr/lib/:
 
 # Network interface monitoring
 #
