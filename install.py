@@ -15,12 +15,16 @@ NON_HIDDEN_FOLDERS = [
     'bin'
 ]
 
+LOCAL_HOME_FOLDER_NAME = 'home'
+
 
 def get_destination(src):
     hidden = True
     for fldr in NON_HIDDEN_FOLDERS:
         if src.startswith(fldr):
             hidden = False
+    if src.startswith(LOCAL_HOME_FOLDER_NAME):
+        src = os.path.split(src)[-1]
     return '{}/{}{}'.format(
         os.path.expanduser('~'),
         '.' if hidden else '',

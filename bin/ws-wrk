@@ -5,7 +5,7 @@ xrandr --output DP2-2 --right-of DP2-1 --mode 2560x1440 --rotate left
 
 i3-msg restart
 sleep 1
-i3-msg "workspace 2; move workspace to output DP2-1"
-i3-msg "workspace 3; move workspace to output DP2-1"
-i3-msg "workspace 4; move workspace to output DP2-2"
+i3-msg "workspace number 2; move workspace to output DP2-1"
+i3-msg "workspace number 3; move workspace to output DP2-1"
+i3-msg "workspace number 4; move workspace to output DP2-2"
 # /home/sindri/.i3/ws/wsw
