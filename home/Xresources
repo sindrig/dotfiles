@@ -83,7 +83,7 @@ URxvt.keysym.Shift-Control-V: perl:clipboard:paste
 URxvt.clipboard.copycmd:  xsel -ib
 URxvt.clipboard.pastecmd: xsel -ob
 
-URxvt*scrollTtyOutput:  false
+!URxvt*scrollTtyOutput:  false
 URxvt*fading: 10
 
 URxvt.keysym.Control-Up:   \033[1;5A

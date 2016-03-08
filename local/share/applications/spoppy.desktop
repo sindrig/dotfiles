@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Spoppy
+Comment=Spoppy - Lightweight spotify command-line interface
+Exec=i3-sensible-terminal -e "/usr/bin/spoppy"
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=Application;

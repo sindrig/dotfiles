@@ -6,9 +6,8 @@
     "percent": 1,
     "swallows": [
        {
-       "class": "^Subl3$"
+       "class": "^Sublime_text$"
        // "instance": "^sublime_text$"
-       // "title": "^\\~\\/\\.i3\\/ws\\.json\\ \\(floti\\)\\ \\-\\ Sublime\\ Text$"
        }
     ],
     "type": "con"
