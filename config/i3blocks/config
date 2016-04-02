@@ -131,6 +131,10 @@ interval=10
 command=~/.config/i3blocks/ovpn.py
 interval=10
 
+[layout]
+command=~/.config/i3blocks/showlayout.sh
+interval=5
+
 [keyindicator]
 interval=2
 separator=false

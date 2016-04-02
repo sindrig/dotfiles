@@ -16,9 +16,9 @@ new_float normal
 hide_edge_borders both
 
 # change borders
-bindsym $mod+u border none
-bindsym $mod+y border pixel 2
-bindsym $mod+n border normal
+# bindsym $mod+u border none
+# bindsym $mod+y border pixel 2
+# bindsym $mod+n border normal
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -30,6 +30,9 @@ font pango:DejaVu Sans Mono 10
 
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod
+
+# Swap layouts
+bindsym $mod+i exec notify-send "$(~/bin/swaplayout.sh)"
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
@@ -59,11 +62,10 @@ bindsym $mod+Ctrl+x exec xkill
 # focus_follows_mouse no
 
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+ae focus right
-bindsym $mod+semicolon focus right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -72,11 +74,10 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+ae move right
-bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -86,11 +87,11 @@ bindsym $mod+Shift+Right move right
 
 # workspace back and forth (with/without active container)
 workspace_auto_back_and_forth yes
-bindsym $mod+b workspace back_and_forth
+bindsym Mod1+Tab workspace back_and_forth
 bindsym $mod+Shift+b move container to workspace back_and_forth; workspace back_and_forth
 
 # split in horizontal orientation
-bindsym $mod+h split h;exec notify-send 'tile horizontally'
+bindsym $mod+b split h;exec notify-send 'tile horizontally'
 
 # split in vertical orientation
 bindsym $mod+v split v;exec notify-send 'tile vertically'
@@ -158,10 +159,9 @@ bindsym $mod+Shift+9 move container to workspace number 9; workspace number 9
 
 # Move workspaces
 bindsym $mod+Mod1+Left move workspace to output left
-bindsym $mod+Mod1+ae move workspace to output left
-bindsym $mod+Mod1+semicolon move workspace to output left
+bindsym $mod+Mod1+h move workspace to output left
 bindsym $mod+Mod1+Right move workspace to output right
-bindsym $mod+Mod1+j move workspace to output right
+bindsym $mod+Mod1+l move workspace to output right
 
 # Open applications on specific workspaces
 # assign [class="Thunderbird"] 1
@@ -240,11 +240,10 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 5 px or 5 ppt
-        bindsym k resize grow height 5 px or 5 ppt
-        bindsym l resize shrink height 5 px or 5 ppt
-        bindsym ae resize grow width 5 px or 5 ppt
-        bindsym semicolon resize grow width 5 px or 5 ppt
+        bindsym h resize shrink width 5 px or 5 ppt
+        bindsym j resize grow height 5 px or 5 ppt
+        bindsym k resize shrink height 5 px or 5 ppt
+        bindsym l resize grow width 5 px or 5 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-xrandr --output eDP1 --mode 2880x1620
-xrandr --output DP2-1 --right-of eDP1 --mode 2560x1440
-xrandr --output DP2-2 --right-of DP2-1 --mode 2560x1440 --rotate left
+xrandr --output eDP1 --mode 2048x1152
+xrandr --output DP2-1 --left-of eDP1 --mode 2560x1440
+xrandr --output DP2-2 --left-of DP2-1 --mode 2560x1440 --rotate left
 
 i3-msg restart
 sleep 1
