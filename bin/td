@@ -44,13 +44,23 @@ def difference(a, b):
         datetime.datetime.combine(dummydate, a)
     )
 
+
 def main(*args):
-    if len(args) == 2:
-        fr, to = parse_from_to(*args)
-        diff = difference(to, fr)
-        h = ('%s' % int(diff.seconds / 3600)).zfill(2)
-        m = ('%s' % int((diff.seconds % 3600) / 60)).zfill(2)
-        print('%s:%s' % (h, m))
+    if not len(args) % 2:
+        start = 0
+        wholediff = datetime.timedelta(0)
+        while start < len(args):
+            fr, to = parse_from_to(*args[start:start + 2])
+            diff = difference(to, fr)
+            wholediff += diff
+            h = ('%s' % int(diff.seconds / 3600)).zfill(2)
+            m = ('%s' % int((diff.seconds % 3600) / 60)).zfill(2)
+            print('%s:%s' % (h, m))
+            start += 2
+        if start > 2:
+            h = ('%s' % int(wholediff.seconds / 3600)).zfill(2)
+            m = ('%s' % int((wholediff.seconds % 3600) / 60)).zfill(2)
+            print('Sum: %s:%s' % (h, m))
     else:
         print('USAGE: td HHMM HHMM')
 
