@@ -1,0 +1,44 @@
+{
+	"build_systems":
+	[
+        {
+            "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+            "name": "Anaconda Python Builder",
+            "selector": "source.python",
+            "shell_cmd": "\"PATH_TO_PROJECT/venv/bin/python\" -u \"$file\""
+        },
+        {
+            "file_regex": ".js$",
+            "name": "Javascript tests",
+            "selector": "source.javascript",
+            "shell_cmd": "npm run testLocal",
+            "working_dir": "PATH_TO_PROJECT"
+        },
+	],
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				"venv",
+                "test-reports",
+                "static",
+                "logs",
+				"node_modules"
+			],
+            "file_exclude_patterns": [
+                ".git-history"
+            ],
+			"path": "PATH_TO_PROJECT"
+		}
+	],
+	"settings":
+	{
+		"python_interpreter": "PATH_TO_PROJECT/venv/bin/python",
+		"python_package_paths":
+		[
+			"$project_path/src"
+		]
+	}
+}
+
