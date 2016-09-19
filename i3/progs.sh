@@ -1,4 +1,4 @@
-hipchat &
+slack &
 pidgin &
 
 google-chrome-stable &
