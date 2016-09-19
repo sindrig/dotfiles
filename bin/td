@@ -46,6 +46,8 @@ def difference(a, b):
 
 
 def main(*args):
+    if len(args) == 1:
+        args = [args[0], datetime.datetime.now().strftime('%H%M')]
     if not len(args) % 2:
         start = 0
         wholediff = datetime.timedelta(0)
