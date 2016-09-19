@@ -4,7 +4,7 @@ xrandr --output eDP1 --mode 2048x1152
 xrandr --output DP2-1 --left-of eDP1 --mode 2560x1440
 xrandr --output DP2-2 --left-of DP2-1 --mode 2560x1440 --rotate left
 
-i3-msg restart
+# i3-msg restart
 sleep 1
 i3-msg "workspace number 2; move workspace to output DP2-1"
 i3-msg "workspace number 3; move workspace to output DP2-1"
