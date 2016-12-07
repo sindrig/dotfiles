@@ -56,9 +56,9 @@ bindsym $mod+Shift+F3 exec gksu pcmanfm
 #bindsym $mod+Ctrl+t exec --no-startup-id compton -b
 bindsym $mod+Ctrl+m exec pavucontrol
 bindsym $mod+Shift+d exec killall dunst && exec notify-send 'restart dunst'
-bindsym Print exec scrot -e 'mv $f ~/Screenshots' && sleep 1 && exec notify-send 'screenshot has been saved to ~/Screenshots'
+bindsym $mod+Shift+Print exec scrot -e 'mv $f ~/Screenshots' && sleep 1 && exec notify-send 'screenshot has been saved to ~/Screenshots'
 bindsym $mod+Print exec scrot -ue 'mv $f ~/Screenshots' && sleep 1 && exec notify-send 'screenshot has been saved to ~/Screenshots'
-bindsym --release $mod+Shift+Print exec notify-send 'selection will be saved to ~/Screenshots' & exec scrot -se 'mv $f ~/Screenshots' && sleep 1 && exec notify-send 'screenshot has been saved in ~/Screenshots'
+bindsym --release Print exec notify-send 'selection will be saved to ~/Screenshots' & exec scrot -se 'mv $f ~/Screenshots' && sleep 1 && exec notify-send 'screenshot has been saved in ~/Screenshots'
 bindsym $mod+Ctrl+x exec xkill
 
 # focus_follows_mouse no
@@ -210,12 +210,11 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # Pause spotify
-#bindsym F10 exec /usr/lib/qt4/bin/qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
-# bindsym F11 exec /usr/lib/qt4/bin/qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
-# bindsym F12 exec /usr/lib/qt4/bin/qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause && notify-send "Play/Pause"
 bindsym F12 exec /usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.PlayPause && notify-send "Play/Pause"
 bindsym F10 exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Previous)"
+bindsym XF86AudioPrev exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Previous)"
 bindsym F11 exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Next)"
+bindsym XF86AudioNext exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Next)"
 
 # Set shut down, restart and locking features
 bindsym Control+$mod+l mode "$mode_system"
