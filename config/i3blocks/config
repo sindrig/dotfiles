@@ -128,8 +128,12 @@ interval=10
 interval=10
 #separator=false
 
-[openvpn]
-command=~/.config/i3blocks/ovpn.py
+#[openvpn]
+#command=~/.config/i3blocks/ovpn.py
+#interval=10
+
+[cpn]
+command=~/.config/i3blocks/vpn.py
 interval=10
 
 [layout]
