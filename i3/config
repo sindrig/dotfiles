@@ -107,6 +107,7 @@ bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
+# USE THIS TO GET OUT OF SCRATCHPAD
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
@@ -323,3 +324,6 @@ exec_always --no-startup-id "i3-msg 'rename workspace 2 to \"2: www\"'"
 exec_always --no-startup-id "i3-msg 'rename workspace 3 to \"3: term\"'"
 exec_always --no-startup-id "i3-msg 'rename workspace 4 to \"4: code\"'"
 exec_always --no-startup-id "i3-msg 'rename workspace 1 to \"1: chat\"'"
+
+# Bullshit
+bindsym F9 exec sleep 1 && xdotool type " ¯\_(ツ)_/¯"

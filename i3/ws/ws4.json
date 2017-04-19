@@ -6,7 +6,7 @@
     "percent": 1,
     "swallows": [
        {
-       "class": "^Sublime_text$"
+       "class": "Subl3"
        // "instance": "^sublime_text$"
        }
     ],
