@@ -110,6 +110,11 @@ label=
 #instance=/mnt/data
 interval=30
 
+[disk]
+label=☵
+instance=/var/data
+interval=30
+
 [keyboardlayout]
 command=/usr/lib/:
 
