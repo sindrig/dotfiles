@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+do-command() {
+    xdotool type "$1"
+    xdotool key Return
+}
+
+go-home() {
+    do-command "cd ~/.tempo/dolly"
+}
+
+go-to-sub(){
+    do-command "tempoc admin $1 $2"
+}
+
+watch-pods(){
+    do-command 'watch "kubectl get pods | grep -v dd-agent"'
+}
+
+i3-sensible-terminal
+go-home
+go-to-sub $1 $2
+watch-pods
+
+i3-sensible-terminal
+go-home
+go-to-sub $1 $2

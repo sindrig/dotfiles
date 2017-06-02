@@ -196,6 +196,7 @@ for_window [class="(?i)System-config-printer.py"] floating enable border normal
 for_window [class="Skype"] floating enable border normal
 for_window [class="Timeset-gui"] floating enable border normal
 for_window [class="(?i)virtualbox"] floating enable border normal
+for_window [title="^airnef - Wirelessly download images and movies from your Nikon Camera"] floating enable border normal
 # for_window [class="^Spotify$"] floating enable
 
 # switch to workspace with urgent window automatically

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Android emulator
+Comment=Android emulator
+Path=/home/sindri/bin/
+Exec=android-emulator.sh

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=Airnef
+Comment=Airnef - Copy images
+Exec=~/bin/airnef
+Icon=utilities-terminal
+Type=Application
+Categories=Application;

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Tempo admin staging bravo
+Comment=Tempo staging bravo admin
+Path=/home/sindri/bin/
+Exec=tempo-admin-staging-bravo

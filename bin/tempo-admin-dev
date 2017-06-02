@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cluster='hydra'
+tempo-admin development $cluster

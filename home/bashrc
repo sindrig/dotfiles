@@ -1,0 +1,208 @@
+# if [ -f /etc/bash.bashrc ]; then
+#    . /etc/bash.bashrc
+# fi
+
+xhost +local:root > /dev/null 2>&1
+
+
+complete -cf sudo
+
+shopt -s cdspell
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s dotglob
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s histappend
+shopt -s hostcomplete
+
+export HISTSIZE=10000
+export HISTFILESIZE=${HISTSIZE}
+export HISTCONTROL=ignoreboth
+export JAVA_FONTS=/usr/share/fonts/TTF
+export EDITOR=/usr/bin/vim
+export BROWSER=/usr/bin/google-chrome-stable
+export TERMINAL=/usr/bin/xfce4-terminal
+export PATH='/home/sindri/bin:/opt/atlassian-plugin-sdk/bin/:'$PATH
+
+alias ls='ls --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
+alias ll='ls -l --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
+alias la='ls -la --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
+alias grep='grep --color=tty -d skip'
+alias cp="cp -i"                          # confirm before overwriting something
+alias df='df -h'                          # human-readable sizes
+alias free='free -m'                      # show sizes in MB
+alias np='nano PKGBUILD'
+alias fixit='sudo rm -f /var/lib/pacman/db.lck'
+alias update='yaourt -Syua'
+alias con='nano $HOME/.i3/config'
+alias comp='nano $HOME/.config/compton.conf'
+alias inst='sudo pacman -S'
+alias mirrors='sudo pacman-mirrors -g'
+alias db='sudo pacman -Syy'
+alias printer='system-config-printer'
+#alias vim=vi
+
+# ex - archive extractor
+# usage: ex <file>
+ex ()
+{
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1   ;;
+      *.tar.gz)    tar xzf $1   ;;
+      *.bz2)       bunzip2 $1   ;;
+      *.rar)       unrar x $1     ;;
+      *.gz)        gunzip $1    ;;
+      *.tar)       tar xf $1    ;;
+      *.tbz2)      tar xjf $1   ;;
+      *.tgz)       tar xzf $1   ;;
+      *.zip)       unzip $1     ;;
+      *.Z)         uncompress $1;;
+      *.7z)        7z x $1      ;;
+      *)           echo "'$1' cannot be extracted via ex()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+# prompt
+#PS1='[\u@\h \W]\$ '
+. /usr/share/git/git-prompt.sh
+PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
+colorize(){
+    echo "\[\e[$1\]$2\[\e[0m\]"
+}
+USER_P=$(colorize "0;33m" "\u")
+DIR_P=$(colorize "0;32m" "\w")
+GIT_P=$(colorize "0;31m" "\$(__git_ps1)")
+PC_P=$(colorize "0;33m" "\$")
+
+PS1="$USER_P->$DIR_P$GIT_P $PC_P "
+# PS1='\[\e[1;32m\][\u \W]\$\[\e[0m\] '
+
+
+# The next line updates PATH for the Google Cloud SDK.
+source '/home/sindri/lib/google-cloud-sdk/path.bash.inc'
+
+# The next line enables shell command completion for gcloud.
+source '/home/sindri/lib/google-cloud-sdk/completion.bash.inc'
+
+. /usr/share/autoenv-git/activate.sh
+
+# Add auto-completion for tempoc command
+if [ -f /home/sindri/dev/tempo/dev/tempo-cli/auto/autocomplete-tempoc ]; then
+    . /home/sindri/dev/tempo/dev/tempo-cli/auto/autocomplete-tempoc
+fi
+
+# Toggle ssh/https in git
+fuck() {
+  USERNAME=sindrig
+  CURRENT=$(git remote -v | head -n 1 | awk '{print $2}')
+  if [[ $CURRENT == ssh* ]]; then
+    UPDATED=$(echo $CURRENT | sed "s_ssh://git_https://${USERNAME}_" | sed 's_:7999_/scm_')
+    git remote set-url origin $UPDATED
+    echo $UPDATED
+  elif [[ $CURRENT == https* ]]; then
+    echo "CURRENT $CURRENT"
+    UPDATED=$(echo $CURRENT | sed "s_https://${USERNAME}_ssh://git_" | sed 's_/scm_:7999_')
+    git remote set-url origin $UPDATED
+    echo $UPDATED
+  else
+    echo "Doesn't seem to be a git repo?"
+  fi
+}
+export PATH=/home/sindri/.tempo/dolly/tempoc/bin:$PATH # Tempo CLI
+
+export STAGING_CONF_DIR=~/.tempo/dolly/config/staging
+
+export PATH=/home/sindri/sw/kubernetes/platforms/linux/amd64:$PATH
+export PATH=/home/sindri/sw/kubernetes/cluster:$PATH
+
+_npml ()   #  By convention, the function name
+{                 #+ starts with an underscore.
+  local cur
+  # Pointer to current completion word.
+  # By convention, it's named "cur" but this isn't strictly necessary.
+
+  COMPREPLY=()   # Array variable storing the possible completions.
+  cur=${COMP_WORDS[COMP_CWORD]}
+
+
+  case "$cur" in
+    *)
+    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/ | grep tempo | sed 's/\/$//')" -- $cur ) );;
+#   Generate the completion matches and load them into $COMPREPLY array.
+#   xx) May add more cases here.
+#   yy)
+#   zz)
+  esac
+
+  return 0
+}
+
+complete -F _npml npml
+
+_npmu ()   #  By convention, the function name
+{                 #+ starts with an underscore.
+  local cur
+  # Pointer to current completion word.
+  # By convention, it's named "cur" but this isn't strictly necessary.
+
+  COMPREPLY=()   # Array variable storing the possible completions.
+  cur=${COMP_WORDS[COMP_CWORD]}
+
+
+  case "$cur" in
+    *)
+    COMPREPLY=( $( compgen -W "$(find node_modules/\@temposoftware/ -type l | grep -v .bin | xargs basename)" -- $cur ) );;
+#   Generate the completion matches and load them into $COMPREPLY array.
+#   xx) May add more cases here.
+#   yy)
+#   zz)
+  esac
+
+  return 0
+}
+
+complete -F _npmu npmu
+
+s3sync() {
+    if [[ "$2" == "" ]]; then
+        echo 'Usage: s3sync PROFILE up/down [real]'
+        return 1
+    fi
+    local dry;
+    if [[ "$3" == "real" ]]; then
+        dry=""
+    else
+        dry=" --dryrun"
+    fi
+    if [[ "$2" == "up" ]]; then
+        aws s3 sync /tmp/tempo-$1-config s3://tempo-$1-config --profile=$1 $dry
+    else
+        aws s3 sync s3://tempo-$1-config /tmp/tempo-$1-config --profile=$1 $dry
+    fi
+}
+
+whenwake() {
+    journalctl -b 0 |grep "PM: Finishing"
+}
+
+whensleep() {
+    journalctl -b 0 |grep "]: Suspending system..."
+}
+
+alias ptest="TESTING=True python manage.py test"
+
+k8s-restart-deployment() {
+kubectl patch deployment "$1-deployment" -p'{"spec":{"template":{"spec":{"containers":[{"name":"'$1'","env":[{"name":"RESTART_","value":"'$(date -uIseconds)'"}]}]}}}}'
+}
+
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > ~/.ssh-agent-thing
+fi
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+    eval "$(<~/.ssh-agent-thing)" > /dev/null 2&>1
+fi

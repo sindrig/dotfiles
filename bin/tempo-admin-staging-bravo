@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+tempo-admin staging bravo
