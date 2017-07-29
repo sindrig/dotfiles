@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-cluster='hydra'
+cluster='beowulf'
 tempo-admin development $cluster

@@ -1,5 +1,5 @@
 #!/bin/bash
 
 /usr/bin/xrandr --output eDP1 --mode 2048x1152
-/usr/bin/xrandr --output DP2-2 --mode 1920x1080 --left-of eDP1
+/usr/bin/xrandr --output DP2-1 --mode 2560x1440 --left-of eDP1
 # i3-msg restart
