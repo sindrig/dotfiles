@@ -14,7 +14,7 @@ go-to-sub(){
 }
 
 watch-pods(){
-    do-command 'watch "kubectl get pods | grep -v dd-agent"'
+    do-command 'cluster-admin.py watch-pods'
 }
 
 i3-sensible-terminal
