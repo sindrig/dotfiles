@@ -6,7 +6,7 @@
     "percent": 1,
     "swallows": [
        {
-       "class": "^google\\-chrome$"
+       "class": "^Google\\-chrome$"
        // "instance": "^Google\\-chrome$",
        // "title": "^i3\\:\\ Layout\\ saving\\ in\\ i3\\ \\-\\ Google\\ Chrome$",
        // "window_role": "^browser$"
