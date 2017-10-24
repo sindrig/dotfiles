@@ -196,13 +196,11 @@ whensleep() {
 
 alias ptest="TESTING=True python manage.py test"
 
-k8s-restart-deployment() {
-kubectl patch deployment "$1-deployment" -p'{"spec":{"template":{"spec":{"containers":[{"name":"'$1'","env":[{"name":"RESTART_","value":"'$(date -uIseconds)'"}]}]}}}}'
-}
-
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent > ~/.ssh-agent-thing
 fi
 if [[ "$SSH_AGENT_PID" == "" ]]; then
     eval "$(<~/.ssh-agent-thing)" > /dev/null 2&>1
 fi
+
+export ATLAS_MVN=`which mvn`

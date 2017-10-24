@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 import os
+import signal
 import re
 import datetime
 import sys
 import subprocess
+import psutil
 import traceback
 
 ACTIVE_REGEX = re.compile('GENERAL\.STATE:\s*activated')
@@ -23,15 +25,40 @@ def set_disconnect_date(date):
         f.write(date.strftime(dateformat))
 
 
+def sudo(args):
+    return subprocess.Popen(
+        ['sudo', '-A'] + args,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env={'SUDO_ASKPASS': '/home/sindri/bin/dudo', 'DISPLAY': ':0'}
+    )
+
+
 def updown_vpn(active):
     try:
-        p = subprocess.Popen(
-            ['nmcli', 'c', 'down' if active else 'up', 'id', VPN_NAME],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        o, e = p.communicate()
+        if active:
+            es = []
+            for proc in openvpn_processes():
+                p = sudo([
+                    '/usr/bin/kill',
+                    '-%s' % (signal.SIGKILL.value),
+                    str(proc.pid)
+                ])
+                o, e = p.communicate()
+                if e:
+                    es.append(e.decode('utf-8'))
+            if es and is_active():
+                raise ValueError(''.join(es))
+        else:
+            p = sudo([
+                '/usr/bin/openvpn',
+                '--daemon', 'tempovpn',
+                '--config', '/etc/openvpn/client/tempo.conf'
+            ])
+            o, e = p.communicate()
+        if e:
+            raise ValueError(e)
     except Exception:
         logfile = os.path.join(os.path.dirname(__file__), 'error_log')
         with open(logfile, 'w') as f:
@@ -70,18 +97,14 @@ def handle_show(active):
     print(color)
 
 
+def openvpn_processes():
+    for proc in psutil.process_iter(attrs=['name', 'pid']):
+        if proc.name() == 'openvpn':
+            yield proc
+
+
 def is_active():
-    action = subprocess.Popen(
-        ['nmcli', 'con', 'show', 'id', VPN_NAME],
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
-    out, err = action.communicate()
-    lines = out.decode('utf-8').split('\n')
-    for line in lines:
-        if ACTIVE_REGEX.search(line):
-            return True
+    return any(openvpn_processes())
 
 
 def main():
