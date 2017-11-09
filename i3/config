@@ -270,15 +270,15 @@ bar {
 #	wheel_down_cmd nop
 #	font pango:Cantarell,Icons 9
     font pango:DejaVu Sans Mono 9
-	#colors {
-	#	separator #2ECC71
-	#	background #000000
-	#	statusline #DDDDDD
-	#	focused_workspace #FFFFFF #2ECC71 #000000
-	#	active_workspace #000000 #A4A28D #FFFFFF
-	#	inactive_workspace #A4A28D #000000 #DDDDDD
-	#	urgent_workspace #2ECC71 #900000 #FFFFFF
-	#}
+	colors {
+		separator #2ECC71
+		background #000000
+		statusline #DDDDDD
+		focused_workspace #FFFFFF #2ECC71 #000000
+		active_workspace #000000 #A4A28D #FFFFFF
+		inactive_workspace #A4A28D #000000 #DDDDDD
+		urgent_workspace #2ECC71 #900000 #FFFFFF
+	}
     tray_output eDP1
 }
 
@@ -297,7 +297,7 @@ exec --no-startup-id compton --config /home/sindri/.config/compton.conf
 # exec --no-startup-id start_conky_grey
 # exec --no-startup-id start_conky_green
 # exec --no-startup-id xautolock -time 10 -locker ~/.i3/lock
-exec --no-startup-id xscreensaver
+# exec --no-startup-id xscreensaver
 # exec xinput set-prop "TPPS/2 IBM TrackPoint" "Device Enabled" 0
 exec --no-startup-id syndaemon -Kkd -i 1
 
@@ -326,5 +326,3 @@ exec_always --no-startup-id "i3-msg 'rename workspace 3 to \"3: term\"'"
 exec_always --no-startup-id "i3-msg 'rename workspace 4 to \"4: code\"'"
 exec_always --no-startup-id "i3-msg 'rename workspace 1 to \"1: chat\"'"
 
-# Bullshit
-bindsym F9 exec sleep 1 && xdotool type " ¯\_(ツ)_/¯"
