@@ -13,8 +13,6 @@ fi
 echo "$@" >> /tmp/docklogger
 echo "MONITOR_COUNT $MONITOR_COUNT" >> /tmp/docklogger
 
-
-
 case "$MONITOR_COUNT" in
     "1")
         XRANDR_FLAGS="-d :0" $WS single >> /tmp/docklogger 2>&1
