@@ -279,7 +279,7 @@ bar {
 		inactive_workspace #A4A28D #000000 #DDDDDD
 		urgent_workspace #2ECC71 #900000 #FFFFFF
 	}
-    tray_output eDP1
+    tray_output eDP-1
 }
 
 # Autostart applications

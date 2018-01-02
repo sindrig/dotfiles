@@ -4,4 +4,4 @@ Version=1.0
 Name=Workspace: Work
 Comment=Switch to workspace work
 Path=/home/sindri/bin/
-Exec=ws-wrk
+Exec=ws wrk
