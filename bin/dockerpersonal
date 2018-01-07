@@ -1,0 +1,1 @@
+cp ~/.docker/config.personal.json ~/.docker/config.json
