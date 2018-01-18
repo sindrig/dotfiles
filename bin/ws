@@ -28,7 +28,7 @@ ws-home() {
 }
 
 ws-single() {
-    $XRANDR --output DP-2-3 --off --output $DP22 --off --output $DP21 --off --output HDMI-1 --off --output $EDP1 --mode $PRIMARY_MODE
+    $XRANDR --output DP-2-3 --off --output $DP22 --off --output $DP21 --off --output HDMI-1 --off --output DP-1 --off --output $EDP1 --mode $PRIMARY_MODE
 }
 
 check-primary-mode-exists() {
