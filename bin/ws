@@ -6,6 +6,7 @@ DP22=DP-2-2
 
 PRIMARY_MODE="2048x1152_custom"
 SECONDARY_MODE="2560x1440"
+HOME_MODE="1920x1080"
 
 XRANDR="/usr/bin/xrandr $XRANDR_FLAGS"
 
@@ -24,7 +25,7 @@ ws-wrk() {
 
 ws-home() {
     $XRANDR --output $EDP1 --mode $PRIMARY_MODE
-    $XRANDR --output $DP21 --mode $SECONDARY_MODE --left-of $EDP1
+    $XRANDR --output $DP21 --mode $HOME_MODE --left-of $EDP1
 }
 
 ws-single() {

@@ -218,6 +218,11 @@ bindsym XF86AudioPrev exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com
 bindsym F11 exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Next)"
 bindsym XF86AudioNext exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Next)"
 
+# Volume settings
+bindsym XF86AudioRaiseVolume exec notify-send -t 750 "$(amixer -D pulse sset Master 5%+ | grep 'Front Left: Playback' | awk '{print $5}')"
+bindsym XF86AudioLowerVolume exec notify-send -t 750 "$(amixer -D pulse sset Master 5%- | grep 'Front Left: Playback' | awk '{print $5}')"
+bindsym XF86AudioMute exec /home/sindri/bin/mute.sh
+
 # Set shut down, restart and locking features
 bindsym Control+$mod+l mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
@@ -286,7 +291,7 @@ bar {
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore
 exec --no-startup-id nm-applet
-exec --no-startup-id volumeicon
+# exec --no-startup-id volumeicon
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
 exec --no-startup-id clipit
