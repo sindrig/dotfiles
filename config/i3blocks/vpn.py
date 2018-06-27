@@ -28,7 +28,7 @@ def set_disconnect_date(date):
 def sudo(args):
     return subprocess.Popen(
         ['sudo', '-A'] + args,
-        stdin=subprocess.PIPE,
+        # stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         env={'SUDO_ASKPASS': '/home/sindri/bin/dudo', 'DISPLAY': ':0'}

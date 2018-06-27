@@ -113,9 +113,6 @@ fuck() {
     echo "Doesn't seem to be a git repo?"
   fi
 }
-export PATH=/home/sindri/.tempo/dolly/tempoc/bin:$PATH # Tempo CLI
-
-export STAGING_CONF_DIR=~/.tempo/dolly/config/staging
 
 export PATH=/home/sindri/sw/kubernetes/platforms/linux/amd64:$PATH
 export PATH=/home/sindri/sw/kubernetes/cluster:$PATH
@@ -168,24 +165,6 @@ _npmu ()   #  By convention, the function name
 
 complete -F _npmu npmu
 
-s3sync() {
-    if [[ "$2" == "" ]]; then
-        echo 'Usage: s3sync PROFILE up/down [real]'
-        return 1
-    fi
-    local dry;
-    if [[ "$3" == "real" ]]; then
-        dry=""
-    else
-        dry=" --dryrun"
-    fi
-    if [[ "$2" == "up" ]]; then
-        aws s3 sync /tmp/tempo-$1-config s3://tempo-$1-config --profile=$1 $dry
-    else
-        aws s3 sync s3://tempo-$1-config /tmp/tempo-$1-config --profile=$1 $dry
-    fi
-}
-
 whenwake() {
     journalctl -b 0 |grep "PM: Finishing"
 }
@@ -203,4 +182,38 @@ if [[ "$SSH_AGENT_PID" == "" ]]; then
     eval "$(<~/.ssh-agent-thing)" > /dev/null 2&>1
 fi
 
+t() {
+    MODULE=$1;
+    homedir=~
+    eval homedir=$homedir
+    DIR="$homedir/dev/tempo/dolly/src/$MODULE";
+    if [ -d $DIR ]; then
+        cd $DIR
+    else
+        echo "$DIR"
+        for d in $DIR*; do
+            [ -e "$d" ] || continue
+            cd $d && break
+        done
+    fi
+}
+
+_t() {
+  local cur
+
+  COMPREPLY=()   # Array variable storing the possible completions.
+  cur=${COMP_WORDS[COMP_CWORD]}
+
+
+  case "$cur" in
+    *)
+    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/dolly/src/ | sed 's/\/$//')" -- $cur ) );;
+  esac
+
+  return 0
+}
+
+complete -F _t t
+
 export ATLAS_MVN=`which mvn`
+export PATH=/home/sindri/dev/tempo/dolly/tempoc/bin:$PATH # Tempo CLI
