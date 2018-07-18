@@ -47,8 +47,8 @@ bindsym $mod+Shift+q kill
 bindsym $mod+d exec j4-dmenu-desktop --dmenu='rofi -i -dmenu -font "snap 12" -bg "#111111" -fg "#AAAAAA" -hlbg "#285577" -hlfg "#ffffff" -opacity 90 -m -1 -location 0  -p "run:" -matching fuzzy'
 
 # Screen brightness controls
-# bindsym XF86MonBrightnessUp exec xbacklight -inc 10 && exec notify-send 'brightness up'
-# bindsym XF86MonBrightnessDown exec xbacklight -dec 10 && exec notify-send 'brightness down'
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 && exec notify-send -t 750 "Brightness $(xbacklight | cut -d'.' -f1)%"
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 && exec notify-send -t 750 "Brightness $(xbacklight | cut -d'.' -f1)%"
 
 # Start Applications
 bindsym $mod+F3 exec pcmanfm
@@ -308,7 +308,7 @@ exec --no-startup-id compton --config /home/sindri/.config/compton.conf
 # exec --no-startup-id xscreensaver
 # exec xinput set-prop "TPPS/2 IBM TrackPoint" "Device Enabled" 0
 exec --no-startup-id syndaemon -Kkd -i 1
-exec --no-startup-id wicd-gtk
+exec --no-startup-id wicd-gtk -t
 
 # Turn on numlock
 exec --no-startup-id /usr/bin/numlockx on
