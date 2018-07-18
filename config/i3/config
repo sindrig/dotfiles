@@ -222,7 +222,7 @@ bindsym XF86AudioNext exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com
 # Volume settings
 bindsym XF86AudioRaiseVolume exec notify-send -t 750 "$(amixer -D pulse sset Master 5%+ | grep 'Front Left: Playback' | awk '{print $5}')"
 bindsym XF86AudioLowerVolume exec notify-send -t 750 "$(amixer -D pulse sset Master 5%- | grep 'Front Left: Playback' | awk '{print $5}')"
-bindsym XF86AudioMute exec /home/sindri/bin/mute.sh
+bindsym XF86AudioMute exec notify-send "Sound: $(amixer -D pulse set Master 1+ toggle | grep "Front Left: Playback" | awk '{print $6}')"
 
 # Set shut down, restart and locking features
 bindsym Control+$mod+l mode "$mode_system"
@@ -307,7 +307,7 @@ exec --no-startup-id compton --config /home/sindri/.config/compton.conf
 # exec --no-startup-id xscreensaver
 # exec xinput set-prop "TPPS/2 IBM TrackPoint" "Device Enabled" 0
 exec --no-startup-id syndaemon -Kkd -i 1
-exec --no-startup-id netctltray
+# exec --no-startup-id wpa_gui
 
 # Turn on numlock
 exec --no-startup-id /usr/bin/numlockx on
