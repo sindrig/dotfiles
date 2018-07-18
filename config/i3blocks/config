@@ -30,7 +30,7 @@ markup=none
 
 
 [mediaplayer]
-command=echo "♪ $(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Current) ♪"
+command=/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Current
 #instance=spotify
 #signal=10
 interval=5

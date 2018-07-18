@@ -74,16 +74,25 @@ PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
 colorize(){
     echo "\[\e[$1\]$2\[\e[0m\]"
 }
+
+show_virtual_env() {
+  if [ -n "$VIRTUAL_ENV" ]; then
+    echo "($(basename $VIRTUAL_ENV))"
+  fi
+}
+export -f show_virtual_env
+
 USER_P=$(colorize "0;33m" "\u")
 DIR_P=$(colorize "0;32m" "\w")
 GIT_P=$(colorize "0;31m" "\$(__git_ps1)")
 PC_P=$(colorize "0;33m" "\$")
 
 PS1="$USER_P->$DIR_P$GIT_P $PC_P "
+PS1='$(show_virtual_env)'$PS1
 # PS1='\[\e[1;32m\][\u \W]\$\[\e[0m\] '
 
 
-. /usr/share/autoenv-git/activate.sh
+# . /usr/share/autoenv-git/activate.sh
 
 # Add auto-completion for tempoc command
 if [ -f /home/sindri/dev/tempo/dev/tempo-cli/auto/autocomplete-tempoc ]; then
@@ -177,18 +186,24 @@ if [[ "$SSH_AGENT_PID" == "" ]]; then
 fi
 
 t() {
+  dev-cd $1 /dev/tempo/dolly/src/ || dev-cd $1 /dev/
+}
+
+dev-cd() {
     MODULE=$1;
+    SEARCH_DIR=$2
     homedir=~
     eval homedir=$homedir
-    DIR="$homedir/dev/tempo/dolly/src/$MODULE";
+    DIR="$homedir$SEARCH_DIR$MODULE";
     if [ -d $DIR ]; then
         cd $DIR
     else
         echo "$DIR"
         for d in $DIR*; do
             [ -e "$d" ] || continue
-            cd $d && break
+            cd $d && return 0
         done
+        return 1
     fi
 }
 
@@ -201,7 +216,7 @@ _t() {
 
   case "$cur" in
     *)
-    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/dolly/src/ | sed 's/\/$//')" -- $cur ) );;
+    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/dolly/src/ ~/dev/ | grep -v ":$" | sed 's/\/$//')" -- $cur ) );;
   esac
 
   return 0
@@ -211,3 +226,6 @@ complete -F _t t
 
 export ATLAS_MVN=`which mvn`
 export PATH=/home/sindri/dev/tempo/dolly/tempoc/bin:$PATH # Tempo CLI
+export LD_LIBRARY_PATH=/usr/local/lib
+
+eval "$(direnv hook bash)"

@@ -41,9 +41,8 @@ def updown_vpn(active):
             es = []
             for proc in openvpn_processes():
                 p = sudo([
-                    '/usr/bin/kill',
+                    '/home/sindri/bin/killvpn.sh',
                     '-%s' % (signal.SIGKILL.value),
-                    str(proc.pid)
                 ])
                 o, e = p.communicate()
                 if e:
