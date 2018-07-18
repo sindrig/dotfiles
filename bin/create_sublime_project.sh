@@ -8,8 +8,8 @@ fi
 PROJECT_NAME=$1
 PROJECT_DIRECTORY="$( cd $2 && pwd )"
 
-SUBLIME_PROJET_DIRECTORY="~/.config/sublime-text-3/Packages/User/Projects/"
-TARGET_FILENAME="$SUBLIME_PROJET_DIRECTORY$PROJECT_NAME.sublime-project"
+SUBLIME_PROJECT_DIRECTORY="~/dev/Projects/"
+TARGET_FILENAME="$SUBLIME_PROJECT_DIRECTORY$PROJECT_NAME.sublime-project"
 eval TARGET_FILENAME=$TARGET_FILENAME
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

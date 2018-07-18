@@ -83,12 +83,6 @@ PS1="$USER_P->$DIR_P$GIT_P $PC_P "
 # PS1='\[\e[1;32m\][\u \W]\$\[\e[0m\] '
 
 
-# The next line updates PATH for the Google Cloud SDK.
-source '/home/sindri/lib/google-cloud-sdk/path.bash.inc'
-
-# The next line enables shell command completion for gcloud.
-source '/home/sindri/lib/google-cloud-sdk/completion.bash.inc'
-
 . /usr/share/autoenv-git/activate.sh
 
 # Add auto-completion for tempoc command
