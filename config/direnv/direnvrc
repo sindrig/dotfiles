@@ -10,6 +10,10 @@ layout_python() {
     return 1
   fi
 
+  if [[ ! -d $(direnv_layout_dir) ]]; then
+    mkdir $(direnv_layout_dir)
+  fi
+
   VIRTUAL_ENV=$(direnv_layout_dir)/../venv
   export VIRTUAL_ENV
   if [[ ! -d $VIRTUAL_ENV ]]; then

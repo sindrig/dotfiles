@@ -21,6 +21,7 @@ export HISTFILESIZE=${HISTSIZE}
 export HISTCONTROL=ignoreboth
 export JAVA_FONTS=/usr/share/fonts/TTF
 export EDITOR=/usr/bin/vim
+export VISUAL=$EDITOR
 export BROWSER=/usr/bin/google-chrome-stable
 export TERMINAL=/usr/bin/xfce4-terminal
 export PATH='/home/sindri/bin:/opt/atlassian-plugin-sdk/bin/:'$PATH

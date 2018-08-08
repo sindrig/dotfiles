@@ -4,4 +4,4 @@ Version=1.0
 Name=Workspace: Single
 Comment=Switch to workspace single desktop
 Path=/home/sindri/bin/
-Exec=ws single
+Exec=/home/sindri/bin/ws single

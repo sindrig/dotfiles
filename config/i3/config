@@ -173,6 +173,7 @@ for_window [class="GParted"] floating enable border normal
 for_window [class="Lightdm-gtk-greeter-settings"] floating enable
 for_window [class="Lxappearance"] floating enable
 for_window [class="Pavucontrol"] floating enable
+for_window [class="TeamViewer"] floating enable border normal
 for_window [class="Xfce4-terminal"] border normal
 
 # switch to workspace with urgent window automatically
@@ -267,7 +268,7 @@ bar {
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore
-exec --no-startup-id nm-applet
+# exec --no-startup-id nm-applet
 # exec --no-startup-id volumeicon
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
