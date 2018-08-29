@@ -37,11 +37,11 @@ def parse_time(t):
 
 
 def difference(a, b):
-    if b < a:
-        return difference(b, a)
+    # if b < a:
+    #     return difference(b, a)
     return (
-        datetime.datetime.combine(dummydate, b) -
-        datetime.datetime.combine(dummydate, a)
+        datetime.datetime.combine(dummydate, a) -
+        datetime.datetime.combine(dummydate, b)
     )
 
 
