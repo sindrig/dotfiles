@@ -5,4 +5,4 @@
 #DIRECTORY=`dirname $0`
 #$DIRECTORY/lockmultimon.sh -i ~/.resources/showmewhatyougot.png
 
-i3lock -i ~/.resources/vikingur.png -t
+i3lock -i /home/sindri/.resources/vikingur.png -t
