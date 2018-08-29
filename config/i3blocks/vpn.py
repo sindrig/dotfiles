@@ -53,7 +53,8 @@ def updown_vpn(active):
             p = sudo([
                 '/usr/bin/openvpn',
                 '--daemon', 'tempovpn',
-                '--config', '/etc/openvpn/client/tempo.conf'
+                '--config', '/etc/openvpn/client/tempo.conf',
+                '--log', '/tmp/vpnlog.log',
             ])
             o, e = p.communicate()
         if e:
