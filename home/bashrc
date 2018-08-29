@@ -35,7 +35,6 @@ alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
 alias np='nano PKGBUILD'
 alias fixit='sudo rm -f /var/lib/pacman/db.lck'
-alias update='yaourt -Syua'
 alias con='nano $HOME/.i3/config'
 alias comp='nano $HOME/.config/compton.conf'
 alias inst='sudo pacman -S'
@@ -230,8 +229,11 @@ title() {
 
 complete -F _t t
 
-export ATLAS_MVN=`which mvn`
+# export ATLAS_MVN=`which mvn`
 export PATH=/home/sindri/dev/tempo/dolly/tempoc/bin:$PATH # Tempo CLI
 export LD_LIBRARY_PATH=/usr/local/lib
 
 eval "$(direnv hook bash)"
+eval "$(pyenv init -)"
+
+alias ruv="/home/sindri/Virtualenvs/roov/bin/ruv"
