@@ -124,7 +124,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--lpass-id',
-        default='3916166815288712312',
+        default='4800942720889904025',
     )
     parser.add_argument(
         '--base_url',
