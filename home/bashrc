@@ -70,7 +70,8 @@ ex ()
 # prompt
 #PS1='[\u@\h \W]\$ '
 . /usr/share/git/git-prompt.sh
-PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
+#PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
+
 colorize(){
     echo "\[\e[$1\]$2\[\e[0m\]"
 }
@@ -88,8 +89,12 @@ GIT_P=$(colorize "0;31m" "\$(__git_ps1)")
 PC_P=$(colorize "0;33m" "\$")
 
 PS1="$USER_P->$DIR_P$GIT_P $PC_P "
+
+if [ ! -z ${OP_SUBDOMAIN+x} ]; then
+  PS1='(1pass: $OP_SUBDOMAIN)'$PS1
+fi
+
 PS1='$(show_virtual_env)'$PS1
-# PS1='\[\e[1;32m\][\u \W]\$\[\e[0m\] '
 
 
 # . /usr/share/autoenv-git/activate.sh
