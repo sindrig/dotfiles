@@ -189,7 +189,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # Pause spotify
-bindsym F12 exec /usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.PlayPause && notify-send "Play/Pause"
+bindsym F12 exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.PlayPause)"
 bindsym F10 exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Previous)"
 bindsym XF86AudioPrev exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Previous)"
 bindsym F11 exec notify-send "$(/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Next)"
