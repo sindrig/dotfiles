@@ -3,6 +3,9 @@ lock() {
     ~/.i3/lock
 }
 
+echo "$1" >> /tmp/sindri
+pretty sure i should and can delete this now
+
 case "$1" in
     lock)
         lock
@@ -11,10 +14,10 @@ case "$1" in
         i3-msg exit
         ;;
     suspend)
-        lock && systemctl suspend
+        ~/.i3/lock && systemctl suspend
         ;;
     hibernate)
-        lock && systemctl hibernate
+        ~/.i3/lock && systemctl hibernate
         ;;
     reboot)
         systemctl reboot

@@ -30,7 +30,7 @@ markup=none
 
 
 [mediaplayer]
-command=/usr/lib/qt4/bin/qdbus com.spoppy /com/spoppy com.spoppy.Current
+command=dbus-send --dest=com.spoppy --type=method_call --print-reply=literal /com/spoppy com.spoppy.Current
 #instance=spotify
 #signal=10
 interval=5
@@ -39,17 +39,16 @@ interval=5
 #
 # The battery instance defaults to 0.
 [battery]
-separator=false
 #label=BAT
 label=⚡
 #instance=1
 interval=30
 
-[battery]
+#[battery]
 #label=BAT
 #label=⚡
-instance=1
-interval=30
+#instance=1
+#interval=30
 
 # CPU usage
 #
