@@ -242,3 +242,8 @@ eval "$(direnv hook bash)"
 eval "$(pyenv init -)"
 
 alias ruv="/home/sindri/Virtualenvs/roov/bin/ruv"
+
+export NPM_CONFIG_PREFIX=~/.npm-global
+alias benson="mvn install -DskipTests -DskipITs -Dapi.test.skip=true -Dnpm.build.skip -Dnpm.test.skip -P cloud-build"
+
+source /usr/share/nvm/init-nvm.sh
