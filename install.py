@@ -11,11 +11,16 @@ def main():
     if input('Would you like to continue? (y/n)') in 'yY':
         create_symlinks(to_create)
 
-NON_HIDDEN_FOLDERS = [
-    'bin'
-]
+
+NON_HIDDEN_FOLDERS = (
+    'bin',
+)
 
 LOCAL_HOME_FOLDER_NAME = 'home'
+
+IGNORED_PATHS = (
+    'venv/',
+)
 
 
 def get_destination(src):
@@ -35,6 +40,8 @@ def get_destination(src):
 def gather_symlinks(fldr):
     symlinks = []
     for src in glob.glob(os.path.join(fldr, '*')):
+        if any(src.startswith(path) for path in IGNORED_PATHS):
+            continue
         if os.path.isdir(src):
             symlinks += gather_symlinks(src)
         else:

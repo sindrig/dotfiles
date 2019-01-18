@@ -1,10 +1,11 @@
 #!/bin/bash
 
-EDP1=eDP-1
-DP21=DP2-1
-DP22=DP2-2
+EDP1=eDP1
+DP21=VIRTUAL1
+DP22=VIRTUAL2
 
 PRIMARY_MODE="2048x1152"
+PRIMARY_SINGLE_MODE="3840x2160"
 SECONDARY_MODE="2560x1440"
 HOME_MODE="1920x1080"
 
@@ -29,7 +30,8 @@ ws-home() {
 }
 
 ws-single() {
-    $XRANDR --output DP-2-3 --off --output $DP22 --off --output $DP21 --off --output HDMI-1 --off --output DP-1 --off --output $EDP1 --mode $PRIMARY_MODE
+    # $XRANDR --dpi 288 --output VIRTUAL3 --off --output DP-2-3 --off --output $DP22 --off --output $DP21 --off --output HDMI-1 --off --output DP-1 --off --output $EDP1 --mode $PRIMARY_SINGLE_MODE
+    $XRANDR --output VIRTUAL3 --off --output DP-2-3 --off --output $DP22 --off --output $DP21 --off --output HDMI-1 --off --output DP-1 --off --output $EDP1 --mode $PRIMARY_MODE
 }
 
 check-primary-mode-exists() {

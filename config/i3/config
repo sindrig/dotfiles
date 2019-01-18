@@ -276,6 +276,7 @@ exec --no-startup-id udiskie --tray --use-udisks2
 # exec xinput set-prop "TPPS/2 IBM TrackPoint" "Device Enabled" 0
 exec --no-startup-id syndaemon -Kkd -i 1
 exec --no-startup-id xss-lock -- /home/sindri/.i3/lock
+############xexec --no-startup-id intel-virtual-output
 
 # Turn on numlock
 exec --no-startup-id /usr/bin/numlockx on

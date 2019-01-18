@@ -8,5 +8,6 @@
 # xrandr --addmode eDP-1 2048x1152
 
 systemctl --user import-environment DISPLAY
+~/bin/Xmerge
 
 exec i3
