@@ -196,9 +196,9 @@ bindsym F11 exec notify-send "$(dbus-send --dest=com.spoppy --type=method_call -
 bindsym XF86AudioNext exec notify-send "$(dbus-send --dest=com.spoppy --type=method_call --print-reply=literal /com/spoppy com.spoppy.Next)"
 
 # Volume settings
-bindsym XF86AudioRaiseVolume exec notify-send -t 750 "$(amixer -D pulse sset Master 5%+ | grep 'Front Left: Playback' | awk '{print $5}')"
-bindsym XF86AudioLowerVolume exec notify-send -t 750 "$(amixer -D pulse sset Master 5%- | grep 'Front Left: Playback' | awk '{print $5}')"
-bindsym XF86AudioMute exec notify-send "Sound: $(amixer -D pulse set Master 1+ toggle | grep "Front Left: Playback" | awk '{print $6}')"
+bindsym XF86AudioRaiseVolume exec notify-send -t 750 "$(~/bin/volume.py up)"
+bindsym XF86AudioLowerVolume exec notify-send -t 750 "$(~/bin/volume.py down)"
+bindsym XF86AudioMute exec notify-send -t 750 "$(~/bin/volume.py mute)"
 
 # Set shut down, restart and locking features
 bindsym Control+$mod+l mode "$mode_system"
@@ -261,7 +261,7 @@ bar {
 		inactive_workspace #A4A28D #000000 #DDDDDD
 		urgent_workspace #2ECC71 #900000 #FFFFFF
 	}
-    tray_output eDP-1
+    tray_output eDP1
 }
 
 # Autostart applications

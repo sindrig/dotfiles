@@ -13,7 +13,12 @@ XRANDR="/usr/bin/xrandr $XRANDR_FLAGS"
 
 DISP=${DISPLAY:-":0"}
 
+kill-intel-virtual-output() {
+    ps -ef | grep [i]ntel-virtual-output | tr -s " " | cut -d" " -f2 | xargs -r kill -9
+}
+
 ws-wrk() {
+    intel-virtual-output
     $XRANDR --output $EDP1 --mode $PRIMARY_MODE
     $XRANDR --output $DP21 --left-of $EDP1 --mode $SECONDARY_MODE --rotate normal
     $XRANDR --output $DP22 --left-of $DP21 --mode $SECONDARY_MODE --rotate left
@@ -25,6 +30,7 @@ ws-wrk() {
 }
 
 ws-home() {
+    intel-virtual-output
     $XRANDR --output $EDP1 --mode $PRIMARY_MODE
     $XRANDR --output $DP21 --mode $HOME_MODE --left-of $EDP1
 }
@@ -50,6 +56,7 @@ error() {
 }
 
 main() {
+    kill-intel-virtual-output
     check-primary-mode-exists
     WS=$1
     case $WS in

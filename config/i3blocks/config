@@ -104,10 +104,10 @@ label=⛁
 instance=/
 interval=30
 
-[disk]
-label=
+#[disk]
+#label=
 #instance=/mnt/data
-interval=30
+#interval=30
 
 [disk]
 label=☵
