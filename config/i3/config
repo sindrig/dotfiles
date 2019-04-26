@@ -175,6 +175,9 @@ for_window [class="Lxappearance"] floating enable
 for_window [class="Pavucontrol"] floating enable
 for_window [class="TeamViewer"] floating enable border normal
 for_window [class="Xfce4-terminal"] border normal
+for_window [class="mpv"] floating enable
+for_window [class="Xtensoftphone"] floating enable
+
 
 # switch to workspace with urgent window automatically
 for_window [urgent=latest] focus

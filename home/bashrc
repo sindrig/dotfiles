@@ -181,7 +181,14 @@ whensleep() {
     journalctl -b 0 |grep "]: Suspending system..."
 }
 
-alias ptest="TESTING=True python manage.py test"
+ptest() {
+  if [[ -f ./TEST_ENV ]]; then
+    eval `cat ./TEST_ENV  | awk '{print "export " $1}'`
+    python manage.py test "$@"
+  else
+    TESTING=True python manage.py test "$@"
+  fi
+}
 
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent > ~/.ssh-agent-thing
@@ -191,7 +198,7 @@ if [[ "$SSH_AGENT_PID" == "" ]]; then
 fi
 
 t() {
-  dev-cd $1 /dev/tempo/dolly/src/ || dev-cd $1 /dev/
+  dev-cd $1 /dev/tempo/dolly/src/ || dev-cd $1 /dev/ || dev-cd $1 /dev/tempo/
 }
 
 dev-cd() {
@@ -221,7 +228,7 @@ _t() {
 
   case "$cur" in
     *)
-    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/dolly/src/ ~/dev/ | grep -v ":$" | sed 's/\/$//')" -- $cur ) );;
+    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/dolly/src/ ~/dev/tempo/ ~/dev/ | grep -v ":$" | sed 's/\/$//')" -- $cur ) );;
   esac
 
   return 0
@@ -245,3 +252,7 @@ alias ruv="/home/sindri/Virtualenvs/ruv/bin/ruv"
 
 export NPM_CONFIG_PREFIX=~/.npm-global
 
+export PATH=$PATH:~/.npm-global/bin
+
+
+eval "$(pyenv virtualenv-init -)"
