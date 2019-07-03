@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+RESOLVCONF="/etc/resolv.conf"
+sed -i -e "$((3))i$(head -5 $RESOLVCONF | tail -1)" -e "5d" $RESOLVCONF
+sed -i -e "$((4))i$(head -8 $RESOLVCONF | tail -1)" -e "8d" $RESOLVCONF
