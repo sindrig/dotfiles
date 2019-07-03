@@ -1,4 +1,4 @@
-slack &
+slack --disable-gpu &
 
 google-chrome-stable &
 

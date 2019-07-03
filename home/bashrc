@@ -248,7 +248,7 @@ export LD_LIBRARY_PATH=/usr/local/lib
 eval "$(direnv hook bash)"
 eval "$(pyenv init -)"
 
-alias ruv="/home/sindri/Virtualenvs/ruv/bin/ruv"
+# alias ruv="/home/sindri/Virtualenvs/ruv/bin/ruv"
 
 export NPM_CONFIG_PREFIX=~/.npm-global
 
