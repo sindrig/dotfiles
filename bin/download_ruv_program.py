@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 import argparse
 import json
+import itertools
 import os
 import datetime
 import requests
 import shutil
 import time
+from threading import Lock
 from multiprocessing.pool import ThreadPool
 
 from urllib.parse import parse_qs, urlparse
@@ -16,6 +18,7 @@ URL_TEMPLATE = (
 DATE_FORMAT = '%Y/%m/%d'
 DATE_PART_LENGTH = 4 + 1 + 2 + 1 + 2
 CACHE_LOCATION = os.path.join(os.path.expanduser('~'), '.ruvdlcache')
+DEFAULT_VIDEO_DESTINATION = os.path.join(os.path.expanduser('~'), 'Videos/ruv')
 
 
 class DiskCache:
@@ -42,12 +45,35 @@ class DiskCache:
 
 
 class Entry:
-    def __init__(self, fn, url):
+    def __init__(self, fn, url, date, etag):
         self.fn = fn
         self.url = url
+        self.date = date
+        self.etag = etag
+
+    def to_dict(self):
+        return {
+            'fn': self.fn,
+            'url': self.url,
+            'date': self.date.strftime(DATE_FORMAT),
+            'etag': self.etag,
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            fn=data['fn'],
+            url=data['url'],
+            date=datetime.datetime.strptime(data['date'], DATE_FORMAT),
+            etag=data['etag'],
+        )
+
+    def set_target_path(self, path):
+        self.target_path = path
 
     def __hash__(self):
-        return hash((self.fn, self.url))
+        return hash(self.etag)
+        # return hash((self.fn, self.url, self.date, self.etag))
 
     def __eq__(self, other):
         return isinstance(other, Entry) and hash(self) == hash(other)
@@ -70,7 +96,7 @@ class Crawler:
             ])
         )
 
-    def check_exists_and_get_url(self, date, fn):
+    def get_entry(self, date, fn):
         cache_key = f'{date.strftime(DATE_FORMAT)}-{fn}'
         if not self.cache.has(cache_key):
             r = requests.head(
@@ -89,10 +115,20 @@ class Crawler:
                 )
             )
             if r.ok:
-                self.cache.set(cache_key, r.url)
+                self.cache.set(
+                    cache_key,
+                    {'url': r.url, 'etag': r.headers['ETag']}
+                )
             else:
                 self.cache.set(cache_key, False)
-        return self.cache.get(cache_key)
+        info = self.cache.get(cache_key)
+        if info:
+            return Entry(
+                fn=fn,
+                url=info['url'],
+                date=date,
+                etag=info['etag'],
+            )
 
     def get_new_fn(self, fn, direction):
         fn_id, something = fn.split('T')
@@ -103,7 +139,7 @@ class Crawler:
 
     def crawl(self, date, fn, direction=1):
         new_fn = self.get_new_fn(fn, direction)
-        for i in range(1, self.itercount):
+        for i in range(self.itercount):
             # Search for maximum 2 weeks back in time
             date_to_check = (
                 date +
@@ -111,9 +147,12 @@ class Crawler:
                     days=i * direction * self.days_between_episodes
                 )
             )
-            episode_url = self.check_exists_and_get_url(date_to_check, new_fn)
-            if episode_url:
-                yield Entry(new_fn, episode_url)
+            entry = self.get_entry(
+                date_to_check,
+                new_fn,
+            )
+            if entry:
+                yield entry
                 yield from self.crawl(date_to_check, new_fn, direction)
                 break
 
@@ -140,10 +179,10 @@ class Crawler:
                 DATE_FORMAT,
             )
             fn = wanted_stream.split('/')[-1].split('.')[0]
-            episode_url = self.check_exists_and_get_url(date, fn)
-            if not episode_url:
+            first_exists = self.get_entry(date, fn)
+            if not first_exists:
                 raise RuntimeError('Could not get url for first episode...?')
-            files.add(Entry(fn, episode_url))
+            # files.add(Entry(fn, episode_url))
             print('Searching backwards in time...')
             for entry in self.crawl(date, fn, direction=-1):
                 files.add(entry)
@@ -155,17 +194,91 @@ class Crawler:
 
 
 class Downloader:
-    def __init__(self, destination, files):
+    def __init__(self, destination, program, episode_entries, threaded=True):
         self.destination = destination
-        self.files = files
+        self.program = program
+        self.episode_entries = episode_entries
+        self.threaded = threaded
+
+    def organize(self):
+        info_fn = os.path.join(
+            self.destination,
+            self.program['title'],
+            'program_info.json'
+        )
+        os.makedirs(os.path.dirname(info_fn), exist_ok=True)
+        try:
+            with open(info_fn, 'r') as f:
+                seasons = {
+                    season: {Entry.from_dict(entry) for entry in entries}
+                    for season, entries in json.loads(f.read()).items()
+                }
+        except FileNotFoundError:
+            seasons = {}
+        # seasons = {
+        #     1: {entry, entry, entry},
+        #     2: {entry, entry, entry},
+        # }
+        # Sort episodes into seasons
+        for entry in sorted(
+            self.episode_entries,
+            key=lambda entry: entry.date
+        ):
+            for season in seasons.keys():
+                if any(
+                    abs((e.date - entry.date).days) < 10
+                    for e in seasons[season]
+                ):
+                    seasons[season].add(entry)
+                    break
+            else:
+                seasons[max((seasons or {0: 0}).keys()) + 1] = {entry}
+        # Calculate target paths for entries
+        for season, entries in seasons.items():
+            season_folder = os.path.join(
+                self.destination,
+                self.program['title'],
+                f'Season {season}',
+            )
+            os.makedirs(season_folder, exist_ok=True)
+            for i, entry in enumerate(
+                sorted(entries, key=lambda entry: entry.date)
+            ):
+                fn = (
+                    f'{self.program["title"]} - '
+                    f'S{str(season).zfill(2)}E{str(i + 1).zfill(2)}.mp4'
+                )
+                target_path = os.path.join(
+                    season_folder,
+                    fn,
+                )
+                entry.set_target_path(target_path)
+        # Finally, make sure we don't have the same etag multiple times,
+        # prefer the first one in chronological order
+        found_etags = []
+        for season, entries in seasons.items():
+            for entry in [
+                entry for entry in entries if entry.etag in found_etags
+            ]:
+                entries.remove(entry)
+            found_etags += [entry.etag for entry in entries]
+        with open(info_fn, 'w') as f:
+            serialized_seasons = {
+                season: [entry.to_dict() for entry in entries]
+                for season, entries in seasons.items()
+            }
+            f.write(json.dumps(serialized_seasons, indent=4))
+        return list(itertools.chain(*seasons.values()))
 
     def download_file(self, entry):
-        path = os.path.join(self.destination, f'{entry.fn}.mp4')
-        if os.path.exists(path):
-            print(f'Skipping {entry.fn} - {entry.url}. {path} already exists.')
+        if os.path.exists(entry.target_path):
+            print(
+                f'Skipping {entry.target_path} - {entry.url} because '
+                'it already exists.'
+            )
             return False
         else:
-            print(f'Downloading {entry.url} to {path}')
+            print(f'Downloading {entry.url} to {entry.target_path}')
         r = requests.get(entry.url, stream=True)
 
         if r.ok:
@@ -173,7 +286,7 @@ class Downloader:
             total_length = int(r.headers.get('content-length'))
             dl = 0
             perc_done = 0
-            with open(path, 'wb') as f:
+            with open(entry.target_path, 'wb') as f:
                 for chunk in r:
                     dl += len(chunk)
                     current = int(dl * 10 / total_length)
@@ -185,20 +298,28 @@ class Downloader:
                         )
                     f.write(chunk)
 
-            size = int(os.path.getsize(path) / 1024**2)
+            size = int(os.path.getsize(entry.target_path) / 1024**2)
             print(
-                f'{path} ({size}MB) downloaded in {int(time.time() - start)}s!'
+                f'{entry.target_path} ({size}MB) '
+                f'downloaded in {int(time.time() - start)}s!'
             )
             return True
         print(f'Error {r.status_code} for {entry.url}')
         return False
 
     def start(self):
-        print(f'Downloading {len(self.files)} files')
-        results = ThreadPool(8).imap_unordered(
-            self.download_file,
-            self.files,
-        )
+        print('Organizing...')
+        entries = self.organize()
+        print(f'Downloading {len(entries)} files')
+        if self.threaded:
+            results = ThreadPool(8).imap_unordered(
+                self.download_file,
+                entries,
+            )
+        else:
+            results = [
+                self.download_file(entry) for entry in entries
+            ]
         print(f'{len([r for r in results if r])} files downloaded')
 
 
@@ -220,46 +341,61 @@ def get_program_id(query):
                 return programs[selection - 1]['id']
 
 
-def main(query, destination, days_between_episodes, iteration_count):
-    program_id = get_program_id(query)
+def main(args):
+    program_id = get_program_id(args.query)
     r = requests.get(
         f'https://api.ruv.is/api/programs/program/{program_id}/all'
     )
     r.raise_for_status()
     program = r.json()
     crawler = Crawler(
-        days_between_episodes=days_between_episodes,
-        iteration_count=iteration_count,
+        days_between_episodes=args.days_between_episodes,
+        iteration_count=args.iteration_count,
         program=program,
     )
-    all_files = crawler.search_for_episodes()
-    downloader = Downloader(destination, all_files)
+    episode_entries = crawler.search_for_episodes()
+    downloader = Downloader(
+        destination=args.destination,
+        program=program,
+        episode_entries=episode_entries,
+        threaded=not args.sequential,
+    )
     downloader.start()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('query')
-    parser.add_argument('destination')
     parser.add_argument(
-        '--days-between-episodes', type=int, default=7, nargs='?'
+        'query',
+        help='Search term to search for programs.'
     )
     parser.add_argument(
-        '--iteration-count', type=int, default=5, nargs='?'
+        'destination', default=DEFAULT_VIDEO_DESTINATION, nargs='?',
+        type=os.path.abspath,
+        help='Top level destination directory.'
     )
-    parser.add_argument('--empty-cache', action='store_true')
+    parser.add_argument(
+        '--days-between-episodes', type=int, default=7, nargs='?',
+        help='Rate of episode release.'
+    )
+    parser.add_argument(
+        '--iteration-count', type=int, default=5, nargs='?',
+        help='Maximum days to allow for now shows found.'
+    )
+    parser.add_argument(
+        '--empty-cache',
+        action='store_true',
+        help='Empty request cache to api.ruv.is before running.'
+    )
+    parser.add_argument(
+        '--sequential',
+        action='store_true',
+        help='Do not run threaded, only download one file at a time.'
+    )
     args = parser.parse_args()
     if args.empty_cache:
         if os.path.exists(CACHE_LOCATION):
             shutil.rmtree(CACHE_LOCATION)
-    destination = os.path.abspath(args.destination)
-    if not os.path.isdir(os.path.dirname(destination)):
-        raise RuntimeError(f'Parent directory of {destination} does not exist')
-    os.makedirs(destination, exist_ok=True)
+    os.makedirs(args.destination, exist_ok=True)
     os.makedirs(CACHE_LOCATION, exist_ok=True)
-    main(
-        args.query,
-        destination,
-        args.days_between_episodes,
-        args.iteration_count,
-    )
+    main(args)
