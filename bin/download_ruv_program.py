@@ -7,7 +7,6 @@ import datetime
 import requests
 import shutil
 import time
-from threading import Lock
 from multiprocessing.pool import ThreadPool
 
 from urllib.parse import parse_qs, urlparse
