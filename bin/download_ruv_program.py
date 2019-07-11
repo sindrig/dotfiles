@@ -6,6 +6,7 @@ import os
 import datetime
 import requests
 import shutil
+import logging
 import time
 from multiprocessing.pool import ThreadPool
 
@@ -24,6 +25,10 @@ DEFAULT_VIDEO_DESTINATION = os.path.join(os.path.expanduser('~'), 'Videos/ruv')
 CACHE_VERSION_KEY = '__cache_version__'
 CACHE_VERSION = '1'
 
+logger = logging.getLogger('ruv-downloader')
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.WARN)
+
 
 class CacheVersionException(Exception):
     pass
@@ -37,12 +42,12 @@ class DiskCache:
                 self._data = json.loads(f.read())
             SAVED_CACHE_VERSION = self._data.get(CACHE_VERSION_KEY)
             if SAVED_CACHE_VERSION != CACHE_VERSION:
-                print(
+                logger.info(
                     f'Have cache version "{SAVED_CACHE_VERSION}" but '
                     f'want {CACHE_VERSION}. Starting with empty cache.'
                 )
                 raise CacheVersionException()
-            print('Cache version OK.')
+            logger.debug('Cache version OK.')
         except (FileNotFoundError, CacheVersionException):
             self._data = {
                 CACHE_VERSION_KEY: CACHE_VERSION,
@@ -115,7 +120,7 @@ class Crawler:
         self.days_between_episodes = days_between_episodes
         self.prefer_open = True
         self.cache = DiskCache(program['id'])
-        print(
+        logger.debug(
             '\n'.join([
                 'Initializing crawler with:',
                 f'Iteration count: {self.itercount}',
@@ -135,7 +140,7 @@ class Crawler:
                     openclose='opid' if self.prefer_open else 'lokad',
                 )
             )
-            print(
+            logger.info(
                 'Checking %s - %s - %s (is_open: %s)' % (
                     date.strftime(DATE_FORMAT),
                     fn,
@@ -242,17 +247,19 @@ class Crawler:
                     DATE_FORMAT,
                 )
             except ValueError:
-                print(f'Could not parse date {datestr} from {wanted_stream}')
+                logger.warning(
+                    f'Could not parse date {datestr} from {wanted_stream}'
+                )
                 continue
             fn = wanted_stream.split('/')[-1].split('.')[0]
             first_entry = self.get_entry(date, fn)
             if not first_entry:
                 raise RuntimeError('Could not get url for first episode...?')
             files.add(first_entry)
-            print('Searching backwards in time...')
+            logger.debug('Searching backwards in time...')
             for entry in self.crawl(date, fn, direction=-1):
                 files.add(entry)
-            print('Searching forward in time...')
+            logger.debug('Searching forward in time...')
             for entry in self.crawl(date, fn, direction=1):
                 files.add(entry)
         self.cache.write()
@@ -267,7 +274,7 @@ class Downloader:
         self.threaded = threaded
 
     def organize(self):
-        print(f'Organizing {self.program["title"]}')
+        logger.info(f'Organizing {self.program["title"]}')
         info_fn = os.path.join(
             self.destination,
             self.program['title'],
@@ -343,13 +350,13 @@ class Downloader:
 
     def download_file(self, entry):
         if os.path.exists(entry.target_path):
-            print(
+            logger.info(
                 f'Skipping {entry.target_path} - {entry.url} because '
                 'it already exists.'
             )
             return False
         else:
-            print(f'Downloading {entry.url} to {entry.target_path}')
+            logger.info(f'Downloading {entry.url} to {entry.target_path}')
         r = requests.get(entry.url, stream=True)
 
         if r.ok:
@@ -363,19 +370,19 @@ class Downloader:
                     current = int(dl * 10 / total_length)
                     if current > perc_done:
                         perc_done = current
-                        print(
+                        logger.info(
                             f'{entry.fn} {perc_done * 10}% '
                             f'({int(dl//(time.time() - start)/1024)}kbps)'
                         )
                     f.write(chunk)
 
             size = int(os.path.getsize(entry.target_path) / 1024**2)
-            print(
+            logger.warning(
                 f'{entry.target_path} ({size}MB) '
                 f'downloaded in {int(time.time() - start)}s!'
             )
             return True
-        print(f'Error {r.status_code} for {entry.url}')
+        logger.warning(f'Error {r.status_code} for {entry.url}')
         return False
 
 
@@ -423,7 +430,7 @@ def main(args):
                 )
             }
         else:
-            print(
+            logger.warning(
                 f'Request for program {program_id} (query {query}) '
                 f'failed with status code {r.status_code}.'
             )
@@ -445,26 +452,30 @@ def main(args):
     total_entries_to_download = sum(
         len(entries) for _, entries in downloaders
     )
-    print(f'Downloading {total_entries_to_download} files...')
-    if args.sequential:
-        results = [
-            [
-                downloader.download_file(entry)
-                for entry in entries
-            ] for downloader, entries in downloaders
-        ]
+    if not total_entries_to_download:
+        print('No entries to download, bye')
     else:
-        pool = ThreadPool(8)
-        async_results = [
-            pool.map_async(downloader.download_file, entries)
-            for downloader, entries in downloaders
-        ]
-        results = [result.get() for result in async_results]
-        pool.close()
-        pool.join()
-    print(
-        f'{len([r for r in itertools.chain(*results) if r])} files downloaded'
-    )
+        print(f'Downloading {total_entries_to_download} files...')
+        if args.sequential:
+            results = [
+                [
+                    downloader.download_file(entry)
+                    for entry in entries
+                ] for downloader, entries in downloaders
+            ]
+        else:
+            pool = ThreadPool(8)
+            async_results = [
+                pool.map_async(downloader.download_file, entries)
+                for downloader, entries in downloaders
+            ]
+            results = [result.get() for result in async_results]
+            pool.close()
+            pool.join()
+        print(
+            f'{len([r for r in itertools.chain(*results) if r])} '
+            'files downloaded'
+        )
 
 
 if __name__ == '__main__':
@@ -497,7 +508,16 @@ if __name__ == '__main__':
         action='store_true',
         help='Do not run threaded, only download one file at a time.'
     )
+    parser.add_argument(
+        '-v', '--verbosity', action='count',
+        help='Increase output verbosity'
+    )
     args = parser.parse_args()
+    if args.verbosity is not None:
+        if args.verbosity > 1:
+            logger.setLevel(logging.DEBUG)
+        elif args.verbosity > 0:
+            logger.setLevel(logging.INFO)
     if args.empty_cache:
         if os.path.exists(CACHE_LOCATION):
             shutil.rmtree(CACHE_LOCATION)
