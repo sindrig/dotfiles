@@ -247,7 +247,7 @@ class Crawler:
                     DATE_FORMAT,
                 )
             except ValueError:
-                logger.warning(
+                logger.info(
                     f'Could not parse date {datestr} from {wanted_stream}'
                 )
                 continue
