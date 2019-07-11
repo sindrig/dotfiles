@@ -15,9 +15,18 @@ URL_TEMPLATE = (
     'http://smooth.ruv.cache.is/{openclose}/{date}/2400kbps/{fn}.mp4'
 )
 DATE_FORMAT = '%Y/%m/%d'
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 DATE_PART_LENGTH = 4 + 1 + 2 + 1 + 2
 CACHE_LOCATION = os.path.join(os.path.expanduser('~'), '.ruvdlcache')
 DEFAULT_VIDEO_DESTINATION = os.path.join(os.path.expanduser('~'), 'Videos/ruv')
+# In case we change the cache setup, change the cache version value and we
+# will invalidate all old cache.
+CACHE_VERSION_KEY = '__cache_version__'
+CACHE_VERSION = '1'
+
+
+class CacheVersionException(Exception):
+    pass
 
 
 class DiskCache:
@@ -26,8 +35,18 @@ class DiskCache:
         try:
             with open(self.location, 'r') as f:
                 self._data = json.loads(f.read())
-        except FileNotFoundError:
-            self._data = {}
+            SAVED_CACHE_VERSION = self._data.get(CACHE_VERSION_KEY)
+            if SAVED_CACHE_VERSION != CACHE_VERSION:
+                print(
+                    f'Have cache version "{SAVED_CACHE_VERSION}" but '
+                    f'want {CACHE_VERSION}. Starting with empty cache.'
+                )
+                raise CacheVersionException()
+            print('Cache version OK.')
+        except (FileNotFoundError, CacheVersionException):
+            self._data = {
+                CACHE_VERSION_KEY: CACHE_VERSION,
+            }
 
     def get(self, key):
         return self._data[key]
@@ -37,6 +56,9 @@ class DiskCache:
 
     def has(self, key):
         return key in self._data
+
+    def remove(self, key):
+        del self._data[key]
 
     def write(self):
         with open(self.location, 'w') as f:
@@ -49,6 +71,7 @@ class Entry:
         self.url = url
         self.date = date
         self.etag = etag
+        self.target_path = None
 
     def to_dict(self):
         return {
@@ -69,6 +92,11 @@ class Entry:
 
     def set_target_path(self, path):
         self.target_path = path
+
+    def exists_on_disk(self):
+        if self.target_path is None:
+            raise RuntimeError(f'Missing target path for {self.to_dict}')
+        return os.path.exists(self.target_path)
 
     def __hash__(self):
         return hash(self.etag)
@@ -97,7 +125,9 @@ class Crawler:
 
     def get_entry(self, date, fn):
         cache_key = f'{date.strftime(DATE_FORMAT)}-{fn}'
-        if not self.cache.has(cache_key):
+        if (
+            not self.cache.has(cache_key)
+        ):
             r = requests.head(
                 URL_TEMPLATE.format(
                     date=date.strftime(DATE_FORMAT),
@@ -116,18 +146,50 @@ class Crawler:
             if r.ok:
                 self.cache.set(
                     cache_key,
-                    {'url': r.url, 'etag': r.headers['ETag']}
+                    {
+                        'success': True,
+                        'url': r.url,
+                        'etag': r.headers['ETag'],
+                        'checked_at': datetime.datetime.now().strftime(
+                            DATETIME_FORMAT,
+                        ),
+                    }
                 )
             else:
-                self.cache.set(cache_key, False)
+                self.cache.set(
+                    cache_key,
+                    {
+                        'success': False,
+                        'status_code': r.status_code,
+                        'checked_at': datetime.datetime.now().strftime(
+                            DATETIME_FORMAT,
+                        )
+                    }
+                )
         info = self.cache.get(cache_key)
-        if info:
+        checked_at = datetime.datetime.strptime(
+            info['checked_at'],
+            DATETIME_FORMAT,
+        )
+        if info['success']:
             return Entry(
                 fn=fn,
                 url=info['url'],
                 date=date,
                 etag=info['etag'],
             )
+        elif (
+            # Don't remove unless we last checked before the show was aired
+            checked_at <= (date + datetime.timedelta(1)) and
+            # And we haven't checked this link for over 1 hours
+            abs(
+                (checked_at - datetime.datetime.now()).total_seconds() / 3600
+            ) > 1 and
+            # And the show should have been aired
+            date <= (datetime.datetime.now() + datetime.timedelta(1))
+        ):
+            self.cache.remove(cache_key)
+            return self.get_entry(date, fn)
 
     def get_new_fn(self, fn, direction):
         fn_id, something = fn.split('T')
@@ -173,15 +235,20 @@ class Crawler:
             # )
             wanted_stream = query['streams'][0].split(',')[0]
             # Dates are the first part, '%Y/%m/%d'
-            date = datetime.datetime.strptime(
-                wanted_stream[:DATE_PART_LENGTH],
-                DATE_FORMAT,
-            )
+            datestr = wanted_stream[:DATE_PART_LENGTH]
+            try:
+                date = datetime.datetime.strptime(
+                    datestr,
+                    DATE_FORMAT,
+                )
+            except ValueError:
+                print(f'Could not parse date {datestr} from {wanted_stream}')
+                continue
             fn = wanted_stream.split('/')[-1].split('.')[0]
-            first_exists = self.get_entry(date, fn)
-            if not first_exists:
+            first_entry = self.get_entry(date, fn)
+            if not first_entry:
                 raise RuntimeError('Could not get url for first episode...?')
-            # files.add(Entry(fn, episode_url))
+            files.add(first_entry)
             print('Searching backwards in time...')
             for entry in self.crawl(date, fn, direction=-1):
                 files.add(entry)
@@ -200,6 +267,7 @@ class Downloader:
         self.threaded = threaded
 
     def organize(self):
+        print(f'Organizing {self.program["title"]}')
         info_fn = os.path.join(
             self.destination,
             self.program['title'],
@@ -267,7 +335,11 @@ class Downloader:
                 for season, entries in seasons.items()
             }
             f.write(json.dumps(serialized_seasons, indent=4))
-        return list(itertools.chain(*seasons.values()))
+        return [
+            entry
+            for entry in itertools.chain(*seasons.values())
+            if not entry.exists_on_disk()
+        ]
 
     def download_file(self, entry):
         if os.path.exists(entry.target_path):
@@ -306,21 +378,6 @@ class Downloader:
         print(f'Error {r.status_code} for {entry.url}')
         return False
 
-    def start(self):
-        print('Organizing...')
-        entries = self.organize()
-        print(f'Downloading {len(entries)} files')
-        if self.threaded:
-            results = ThreadPool(8).imap_unordered(
-                self.download_file,
-                entries,
-            )
-        else:
-            results = [
-                self.download_file(entry) for entry in entries
-            ]
-        print(f'{len([r for r in results if r])} files downloaded')
-
 
 def get_program_id(query):
     r = requests.get(
@@ -341,35 +398,84 @@ def get_program_id(query):
 
 
 def main(args):
-    program_id = get_program_id(args.query)
-    r = requests.get(
-        f'https://api.ruv.is/api/programs/program/{program_id}/all'
+    programs = {}
+    pool = ThreadPool(8)
+    for query in args.query:
+        if query.isdigit():
+            program_id = query
+        else:
+            program_id = get_program_id(query)
+        r = requests.get(
+            f'https://api.ruv.is/api/programs/program/{program_id}/all'
+        )
+        if r.ok:
+            program = r.json()
+            print(f'--------- {program["title"]} [{program["id"]}] ---------')
+            crawler = Crawler(
+                days_between_episodes=args.days_between_episodes,
+                iteration_count=args.iteration_count,
+                program=program,
+            )
+            programs[program['id']] = {
+                'program': program,
+                'episodes': pool.apply_async(
+                    crawler.search_for_episodes
+                )
+            }
+        else:
+            print(
+                f'Request for program {program_id} (query {query}) '
+                f'failed with status code {r.status_code}.'
+            )
+
+    downloaders = []
+    for program_id, data in programs.items():
+        downloader = Downloader(
+            destination=args.destination,
+            program=data['program'],
+            episode_entries=data['episodes'].get(),
+            threaded=not args.sequential,
+        )
+        entries = downloader.organize()
+        downloaders.append((downloader, entries))
+
+    pool.close()
+    pool.join()
+
+    total_entries_to_download = sum(
+        len(entries) for _, entries in downloaders
     )
-    r.raise_for_status()
-    program = r.json()
-    crawler = Crawler(
-        days_between_episodes=args.days_between_episodes,
-        iteration_count=args.iteration_count,
-        program=program,
+    print(f'Downloading {total_entries_to_download} files...')
+    if args.sequential:
+        results = [
+            [
+                downloader.download_file(entry)
+                for entry in entries
+            ] for downloader, entries in downloaders
+        ]
+    else:
+        pool = ThreadPool(8)
+        async_results = [
+            pool.map_async(downloader.download_file, entries)
+            for downloader, entries in downloaders
+        ]
+        results = [result.get() for result in async_results]
+        pool.close()
+        pool.join()
+    print(
+        f'{len([r for r in itertools.chain(*results) if r])} files downloaded'
     )
-    episode_entries = crawler.search_for_episodes()
-    downloader = Downloader(
-        destination=args.destination,
-        program=program,
-        episode_entries=episode_entries,
-        threaded=not args.sequential,
-    )
-    downloader.start()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'query',
-        help='Search term to search for programs.'
+        help='Search terms to search for programs.',
+        nargs='+',
     )
     parser.add_argument(
-        'destination', default=DEFAULT_VIDEO_DESTINATION, nargs='?',
+        '--destination', default=DEFAULT_VIDEO_DESTINATION, nargs='?',
         type=os.path.abspath,
         help='Top level destination directory.'
     )
