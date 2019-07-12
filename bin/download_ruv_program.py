@@ -7,7 +7,9 @@ import datetime
 import requests
 import shutil
 import logging
+import glob
 import time
+import multiprocessing
 from multiprocessing.pool import ThreadPool
 
 from urllib.parse import parse_qs, urlparse
@@ -18,6 +20,7 @@ URL_TEMPLATE = (
 DATE_FORMAT = '%Y/%m/%d'
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 DATE_PART_LENGTH = 4 + 1 + 2 + 1 + 2
+PROGRAM_INFO_FN = 'program_info.json'
 CACHE_LOCATION = os.path.join(os.path.expanduser('~'), '.ruvdlcache')
 DEFAULT_VIDEO_DESTINATION = os.path.join(os.path.expanduser('~'), 'Videos/ruv')
 # In case we change the cache setup, change the cache version value and we
@@ -197,11 +200,20 @@ class Crawler:
             return self.get_entry(date, fn)
 
     def get_new_fn(self, fn, direction):
-        fn_id, something = fn.split('T')
-        new_id = str(int(fn_id) + direction)
-        while len(new_id) < len(fn_id):
-            new_id = f'0{new_id}'
-        return f'{new_id}T{something}'
+        known_delimeters = 'AT'
+        for delimiter in known_delimeters:
+            try:
+                fn_id, something = fn.split(delimiter)
+            except ValueError:
+                continue
+            new_id = str(int(fn_id) + direction)
+            while len(new_id) < len(fn_id):
+                new_id = f'0{new_id}'
+            return f'{new_id}{delimiter}{something}'
+        else:
+            raise RuntimeError(
+                f'No known delimiters [{known_delimeters}] found in {fn}'
+            )
 
     def crawl(self, date, fn, direction=1):
         new_fn = self.get_new_fn(fn, direction)
@@ -278,14 +290,16 @@ class Downloader:
         info_fn = os.path.join(
             self.destination,
             self.program['title'],
-            'program_info.json'
+            PROGRAM_INFO_FN,
         )
         os.makedirs(os.path.dirname(info_fn), exist_ok=True)
         try:
             with open(info_fn, 'r') as f:
+                # We store the program info next to the season episodes
                 seasons = {
-                    season: {Entry.from_dict(entry) for entry in entries}
-                    for season, entries in json.loads(f.read()).items()
+                    key: {Entry.from_dict(entry) for entry in entries}
+                    for key, entries in json.loads(f.read()).items()
+                    if key != 'program'
                 }
         except FileNotFoundError:
             seasons = {}
@@ -337,11 +351,12 @@ class Downloader:
                 entries.remove(entry)
             found_etags += [entry.etag for entry in entries]
         with open(info_fn, 'w') as f:
-            serialized_seasons = {
+            serialized_data = {
                 season: [entry.to_dict() for entry in entries]
                 for season, entries in seasons.items()
             }
-            f.write(json.dumps(serialized_seasons, indent=4))
+            serialized_data['program'] = self.program
+            f.write(json.dumps(serialized_data, indent=4))
         return [
             entry
             for entry in itertools.chain(*seasons.values())
@@ -386,38 +401,79 @@ class Downloader:
         return False
 
 
-def get_program_id(query):
-    r = requests.get(
-        f'https://api.ruv.is/api/programs/search/tv/{query}'
-    )
-    r.raise_for_status()
-    programs = r.json()['programs']
-    if not programs:
-        raise RuntimeError(f'No programs found matching {query}')
-    while True:
-        for i, program in enumerate(programs):
-            print(i + 1, ':', program['title'])
-        selection = input('Select program: ')
-        if selection.isdigit():
-            selection = int(selection)
-            if selection > 0 and selection <= len(programs):
-                return programs[selection - 1]['id']
+class ProgramFetcher:
+    pool = None
+
+    def __init__(self, query, update, destination):
+        self.query = query
+        self.update = update
+        self.destination = destination
+
+    def get_programs(self):
+        if args.query:
+            return self.get_programs_by_query(args.query)
+        return self.get_programs_to_update()
+
+    def get_programs_by_query(self, query):
+        for query in args.query:
+            if query.isdigit():
+                program_id = query
+            else:
+                program_id = self.get_program_id(query)
+            r = requests.get(
+                f'https://api.ruv.is/api/programs/program/{program_id}/all'
+            )
+            if r.ok:
+                yield r.json()
+            else:
+                logger.warning(
+                    f'Request for program {program_id} (query {query}) '
+                    f'failed with status code {r.status_code}.'
+                )
+
+    def get_program_id(self, query):
+        r = requests.get(
+            f'https://api.ruv.is/api/programs/search/tv/{query}'
+        )
+        r.raise_for_status()
+        programs = r.json()['programs']
+        if not programs:
+            raise RuntimeError(f'No programs found matching {query}')
+        while True:
+            for i, program in enumerate(programs):
+                print(i + 1, ':', program['title'])
+            selection = input('Select program: ')
+            if selection.isdigit():
+                selection = int(selection)
+                if selection > 0 and selection <= len(programs):
+                    return programs[selection - 1]['id']
+
+    def get_programs_to_update(self):
+        for program_info in glob.glob(
+            os.path.join(self.destination, '*', PROGRAM_INFO_FN)
+        ):
+            with open(program_info, 'r') as f:
+                try:
+                    data = json.loads(f.read())
+                except ValueError:
+                    logger.info(f'Could not parse {program_info}')
+                if 'program' in data:
+                    if 'id' in data['program']:
+                        yield data['program']
+                    else:
+                        logger.info(
+                            f'Could not get program id from {data["program"]}'
+                        )
+                else:
+                    logger.info(f'Could not get program from {data}')
 
 
 def main(args):
-    programs = {}
-    pool = ThreadPool(8)
-    for query in args.query:
-        if query.isdigit():
-            program_id = query
-        else:
-            program_id = get_program_id(query)
-        r = requests.get(
-            f'https://api.ruv.is/api/programs/program/{program_id}/all'
-        )
-        if r.ok:
-            program = r.json()
-            print(f'--------- {program["title"]} [{program["id"]}] ---------')
+    fetcher = ProgramFetcher(args.query, args.update, args.destination)
+    with ThreadPool(8) as pool:
+        programs = {}
+        for program in fetcher.get_programs():
+            print(f'------- {program["title"]} [{program["id"]}] -------')
             crawler = Crawler(
                 days_between_episodes=args.days_between_episodes,
                 iteration_count=args.iteration_count,
@@ -429,25 +485,17 @@ def main(args):
                     crawler.search_for_episodes
                 )
             }
-        else:
-            logger.warning(
-                f'Request for program {program_id} (query {query}) '
-                f'failed with status code {r.status_code}.'
+
+        downloaders = []
+        for program_id, data in programs.items():
+            downloader = Downloader(
+                destination=args.destination,
+                program=data['program'],
+                episode_entries=data['episodes'].get(),
+                threaded=not args.sequential,
             )
-
-    downloaders = []
-    for program_id, data in programs.items():
-        downloader = Downloader(
-            destination=args.destination,
-            program=data['program'],
-            episode_entries=data['episodes'].get(),
-            threaded=not args.sequential,
-        )
-        entries = downloader.organize()
-        downloaders.append((downloader, entries))
-
-    pool.close()
-    pool.join()
+            entries = downloader.organize()
+            downloaders.append((downloader, entries))
 
     total_entries_to_download = sum(
         len(entries) for _, entries in downloaders
@@ -456,6 +504,9 @@ def main(args):
         print('No entries to download, bye')
     else:
         print(f'Downloading {total_entries_to_download} files...')
+        if args.dryrun:
+            print('Dryrun, not downloading anything, bye')
+            return
         if args.sequential:
             results = [
                 [
@@ -464,14 +515,13 @@ def main(args):
                 ] for downloader, entries in downloaders
             ]
         else:
-            pool = ThreadPool(8)
-            async_results = [
-                pool.map_async(downloader.download_file, entries)
-                for downloader, entries in downloaders
-            ]
-            results = [result.get() for result in async_results]
-            pool.close()
-            pool.join()
+            with ThreadPool(8) as pool:
+                pool.__exit__
+                async_results = [
+                    pool.map_async(downloader.download_file, entries)
+                    for downloader, entries in downloaders
+                ]
+                results = [result.get() for result in async_results]
         print(
             f'{len([r for r in itertools.chain(*results) if r])} '
             'files downloaded'
@@ -480,10 +530,16 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument(
+    query_arg = parser.add_argument(
         'query',
         help='Search terms to search for programs.',
-        nargs='+',
+        nargs='*',
+    )
+    parser.add_argument(
+        '-u', '--update',
+        action='store_true',
+        help='Search for all saved shows in `--destination` and download '
+        'available episodes'
     )
     parser.add_argument(
         '--destination', default=DEFAULT_VIDEO_DESTINATION, nargs='?',
@@ -509,15 +565,28 @@ if __name__ == '__main__':
         help='Do not run threaded, only download one file at a time.'
     )
     parser.add_argument(
+        '--dryrun',
+        action='store_true',
+        help='Only search and organize episodes, do not download them.'
+    )
+    parser.add_argument(
         '-v', '--verbosity', action='count',
         help='Increase output verbosity'
     )
     args = parser.parse_args()
+    if bool(args.query) == bool(args.update):
+        raise argparse.ArgumentError(
+            query_arg,
+            'Query terms and update are mutually exclusive and either must '
+            'be included'
+        )
     if args.verbosity is not None:
         if args.verbosity > 1:
             logger.setLevel(logging.DEBUG)
+            multiprocessing.log_to_stderr(logging.DEBUG)
         elif args.verbosity > 0:
             logger.setLevel(logging.INFO)
+            multiprocessing.log_to_stderr(logging.INFO)
     if args.empty_cache:
         if os.path.exists(CACHE_LOCATION):
             shutil.rmtree(CACHE_LOCATION)
