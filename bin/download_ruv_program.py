@@ -372,6 +372,7 @@ class Downloader:
             return False
         else:
             logger.info(f'Downloading {entry.url} to {entry.target_path}')
+
         r = requests.get(entry.url, stream=True)
 
         if r.ok:
@@ -386,7 +387,8 @@ class Downloader:
                     if current > perc_done:
                         perc_done = current
                         logger.info(
-                            f'{entry.fn} {perc_done * 10}% '
+                            f'{os.path.basename(entry.target_path)} '
+                            f'{perc_done * 10}% '
                             f'({int(dl//(time.time() - start)/1024)}kbps)'
                         )
                     f.write(chunk)
