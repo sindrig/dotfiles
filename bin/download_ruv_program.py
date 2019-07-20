@@ -29,7 +29,12 @@ CACHE_VERSION_KEY = '__cache_version__'
 CACHE_VERSION = '1'
 
 logger = logging.getLogger('ruv-downloader')
-logger.addHandler(logging.StreamHandler())
+handler = logging.StreamHandler()
+format_str = '%(asctime)s - %(message)s'
+date_format = '%Y-%m-%d %H:%M:%S'
+formatter = logging.Formatter(format_str, date_format)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 logger.setLevel(logging.WARN)
 
 
@@ -475,7 +480,7 @@ def main(args):
     with ThreadPool(8) as pool:
         programs = {}
         for program in fetcher.get_programs():
-            print(f'------- {program["title"]} [{program["id"]}] -------')
+            logger.info(f'------ {program["title"]} [{program["id"]}] ------')
             crawler = Crawler(
                 days_between_episodes=args.days_between_episodes,
                 iteration_count=args.iteration_count,
@@ -503,11 +508,11 @@ def main(args):
         len(entries) for _, entries in downloaders
     )
     if not total_entries_to_download:
-        print('No entries to download, bye')
+        logger.info('No entries to download, bye')
     else:
-        print(f'Downloading {total_entries_to_download} files...')
+        logger.warning(f'Downloading {total_entries_to_download} files...')
         if args.dryrun:
-            print('Dryrun, not downloading anything, bye')
+            logger.warning('Dryrun, not downloading anything, bye')
             return
         if args.sequential:
             results = [
@@ -524,7 +529,7 @@ def main(args):
                     for downloader, entries in downloaders
                 ]
                 results = [result.get() for result in async_results]
-        print(
+        logger.warning(
             f'{len([r for r in itertools.chain(*results) if r])} '
             'files downloaded'
         )
