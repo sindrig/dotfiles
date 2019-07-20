@@ -231,6 +231,7 @@ class Crawler:
             )
             if entry:
                 yield entry
+                print(entry.fn)
                 yield from self.crawl(date_to_check, new_fn, direction)
                 break
 
@@ -371,7 +372,7 @@ class Downloader:
             )
             return False
         else:
-            logger.info(f'Downloading {entry.url} to {entry.target_path}')
+            logger.warning(f'Downloading {entry.url} to {entry.target_path}')
 
         r = requests.get(entry.url, stream=True)
 
