@@ -231,7 +231,6 @@ class Crawler:
             )
             if entry:
                 yield entry
-                print(entry.fn)
                 yield from self.crawl(date_to_check, new_fn, direction)
                 break
 
