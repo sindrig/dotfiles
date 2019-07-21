@@ -9,6 +9,7 @@ import shutil
 import logging
 import glob
 import time
+import sys
 import multiprocessing
 from multiprocessing.pool import ThreadPool
 
@@ -29,7 +30,7 @@ CACHE_VERSION_KEY = '__cache_version__'
 CACHE_VERSION = '1'
 
 logger = logging.getLogger('ruv-downloader')
-handler = logging.StreamHandler()
+handler = logging.StreamHandler(sys.stdout)
 format_str = '%(asctime)s - %(message)s'
 date_format = '%Y-%m-%d %H:%M:%S'
 formatter = logging.Formatter(format_str, date_format)
@@ -588,12 +589,15 @@ if __name__ == '__main__':
             'be included'
         )
     if args.verbosity is not None:
+        multiprocessing_logger = multiprocessing.get_logger()
         if args.verbosity > 1:
             logger.setLevel(logging.DEBUG)
-            multiprocessing.log_to_stderr(logging.DEBUG)
+            multiprocessing_logger.addHandler(handler)
+            multiprocessing_logger.setLevel(logging.DEBUG)
         elif args.verbosity > 0:
             logger.setLevel(logging.INFO)
-            multiprocessing.log_to_stderr(logging.INFO)
+            multiprocessing_logger.addHandler(handler)
+            multiprocessing_logger.setLevel(logging.INFO)
     if args.empty_cache:
         if os.path.exists(CACHE_LOCATION):
             shutil.rmtree(CACHE_LOCATION)
