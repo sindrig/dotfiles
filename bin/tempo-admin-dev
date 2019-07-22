@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-cluster='beowulf'
-tempo-admin development $cluster

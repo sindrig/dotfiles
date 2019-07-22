@@ -1,3 +1,0 @@
-echo $1 > /home/sindri/dev/timon/customer
-svn up /home/sindri/dev/timon/reglur/$1.timon.is --accept=tf
-touch /home/sindri/dev/timon/timon/vidskiptavinur_example/settings.py

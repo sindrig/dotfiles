@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Version=1.0
-Name=Tempo admin production alpha
-Comment=Tempo production alpha admin
-Path=/home/sindri/bin/
-Exec=tempo-admin-alpha

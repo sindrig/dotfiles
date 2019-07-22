@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Version=1.0
-Name=Android studio
-Comment=Android studio
-Path=/home/sindri/bin/
-Exec=android-studio

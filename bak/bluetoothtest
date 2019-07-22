@@ -1,6 +1,0 @@
-#!/bin/bash
-killall pulseaudio
-pactl load-module module-bluetooth-discover
-sudo systemctl restart bluetooth
-echo "power on" > /tmp/bluetoothshit
-bluetoothctl < /tmp/bluetoothshit
