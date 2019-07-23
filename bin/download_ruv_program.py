@@ -537,7 +537,6 @@ def main(args):
 
 
 if __name__ == '__main__':
-    logger.warning('Running download ruv program with args: %s', sys.argv)
     parser = argparse.ArgumentParser()
     query_arg = parser.add_argument(
         'query',
