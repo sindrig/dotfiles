@@ -3,9 +3,11 @@ import os
 import signal
 import re
 import datetime
+import json
 import sys
 import subprocess
 import psutil
+import tempfile
 import traceback
 
 ACTIVE_REGEX = re.compile('GENERAL\.STATE:\s*activated')
@@ -31,7 +33,7 @@ def sudo(args):
         # stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        env={'SUDO_ASKPASS': '/home/sindri/bin/dudo', 'DISPLAY': ':0'}
+        env={'SUDO_ASKPASS': '/usr/bin/x11-ssh-askpass', 'DISPLAY': ':0'}
     )
 
 
@@ -50,19 +52,29 @@ def updown_vpn(active):
             if es and is_active():
                 raise ValueError(''.join(es))
         else:
-            p = sudo([
-                '/usr/bin/openvpn',
-                '--daemon', 'tempovpn',
-                '--config', '/etc/openvpn/client/tempo.conf',
-                '--log', '/tmp/vpnlog.log',
-            ])
-            o, e = p.communicate()
+            auth = get_auth()
+            with tempfile.NamedTemporaryFile(mode='w') as temp:
+                temp.write(auth)
+                temp.flush()
+                p = sudo([
+                    '/usr/bin/openvpn',
+                    '--daemon', 'tempovpn',
+                    '--config', '/etc/openvpn/client/tempo.conf',
+                    '--log', '/tmp/vpnlog.log',
+                    '--auth-user-pass',
+                    temp.name,
+                ])
+                o, e = p.communicate()
         if e:
             raise ValueError(e)
+        logfile = os.path.join(os.path.dirname(__file__), 'vpn_log')
+        with open(logfile, 'w+b') as f:
+            f.write(o)
     except Exception:
         logfile = os.path.join(os.path.dirname(__file__), 'error_log')
         with open(logfile, 'w') as f:
             f.write(traceback.format_exc())
+
 
 
 def handle_click(active, btn):
@@ -96,6 +108,26 @@ def handle_show(active):
         print('VPN: {}'.format(status))
     print(color)
 
+
+def get_auth():
+    env = os.environ.copy()
+    env['DISPLAY'] = ':0'
+    p = subprocess.Popen(
+        ['lpass', 'show', '-j', 'onelogin.com'],
+        # stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env,
+    )
+    o, e = p.communicate()
+    if e:
+        raise ValueError(e)
+    data = json.loads(o)
+    item = data[0]
+    return '%s\n%s' % (
+        item['username'],
+        item['password'],
+    )
 
 def openvpn_processes():
     for proc in psutil.process_iter(attrs=['name', 'pid']):
