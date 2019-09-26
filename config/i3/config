@@ -177,6 +177,7 @@ for_window [class="TeamViewer"] floating enable border normal
 for_window [class="Xfce4-terminal"] border normal
 for_window [class="mpv"] floating enable
 for_window [class="Xtensoftphone"] floating enable
+for_window [class="Peek"] floating enable
 
 
 # switch to workspace with urgent window automatically

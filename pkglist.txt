@@ -60,6 +60,7 @@ screenfetch
 scrot
 slack-desktop-dark
 sublime-text
+sysstat
 teamviewer
 tree
 udiskie
