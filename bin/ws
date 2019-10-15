@@ -3,6 +3,7 @@
 EDP1=eDP1
 DP21=VIRTUAL1
 DP22=VIRTUAL2
+DP23=VIRTUAL3
 
 PRIMARY_MODE="2048x1152"
 PRIMARY_SINGLE_MODE="3840x2160"
@@ -32,7 +33,7 @@ ws-wrk() {
 ws-home() {
     intel-virtual-output
     $XRANDR --output $EDP1 --mode $PRIMARY_MODE
-    $XRANDR --output $DP21 --mode $HOME_MODE --left-of $EDP1
+    $XRANDR --output $DP23 --mode $SECONDARY_MODE --left-of $EDP1
 }
 
 ws-single() {
