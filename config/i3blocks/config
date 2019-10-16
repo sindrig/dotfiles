@@ -29,9 +29,13 @@ separator=true
 separator_block_width=15
 
 
-[mediaplayer]
-command=echo `dbus-send --dest=com.spoppy --print-reply=literal /com/spoppy com.spoppy.Current`
-interval=5
+# [mediaplayer]
+# command=echo `dbus-send --dest=com.spoppy --print-reply=literal /com/spoppy com.spoppy.Current`
+# interval=5
+
+[baton]
+command=cat ~/.current-spotify-song
+interval=1
 
 [battery]
 label=⚡

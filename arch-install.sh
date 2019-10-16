@@ -16,3 +16,5 @@ yay -S - < pkglist.txt
 
 sudo gpasswd -a sindri bumblebee
 sudo systemctl enable bumblebeed
+
+mkdir ~/.cache/spotifyd

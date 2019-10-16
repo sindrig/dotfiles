@@ -3,6 +3,7 @@ acpi
 alsa-utils
 aws-cli
 bash-completion
+baton
 bind-tools
 bluez-utils
 bolt
@@ -59,6 +60,7 @@ rofi
 screenfetch
 scrot
 slack-desktop-dark
+spotifyd-pulseaudio
 sublime-text
 sysstat
 teamviewer
