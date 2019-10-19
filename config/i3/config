@@ -194,6 +194,7 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # Pause spotify
 bindsym $mod+F12 exec notify-send "$(baton transfer 7d9dc80583437c271e8654793a687016cccafefa)"
+bindsym $mod+F11 exec systemctl restart spotifyd --user
 bindsym F12 exec notify-send "$(baton pause)"
 bindsym F10 exec baton prev && notify-send "$(baton status)"
 bindsym F11 exec baton next && notify-send "$(baton status)"
