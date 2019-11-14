@@ -76,7 +76,6 @@ def updown_vpn(active):
             f.write(traceback.format_exc())
 
 
-
 def handle_click(active, btn):
     if not active:
         updown_vpn(False)
@@ -129,9 +128,10 @@ def get_auth():
         item['password'],
     )
 
+
 def openvpn_processes():
     for proc in psutil.process_iter(attrs=['name', 'pid']):
-        if proc.name() == 'openvpn':
+        if proc.name() == 'openvpn' and 'tempovpn' in proc.cmdline():
             yield proc
 
 
