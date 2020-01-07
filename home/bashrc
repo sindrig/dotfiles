@@ -41,6 +41,7 @@ alias inst='sudo pacman -S'
 alias mirrors='sudo pacman-mirrors -g'
 alias db='sudo pacman -Syy'
 alias printer='system-config-printer'
+alias clip="xclip -selection c"
 #alias vim=vi
 
 # ex - archive extractor
@@ -253,6 +254,7 @@ eval "$(pyenv init -)"
 export NPM_CONFIG_PREFIX=~/.npm-global
 
 export PATH=$PATH:~/.npm-global/bin
-
+export PATH=$PATH:/home/sindri/go/bin
+export GOPATH="/home/sindri/go"
 
 eval "$(pyenv virtualenv-init -)"
