@@ -42,6 +42,7 @@ alias mirrors='sudo pacman-mirrors -g'
 alias db='sudo pacman -Syy'
 alias printer='system-config-printer'
 alias clip="xclip -selection c"
+alias logs="cd ~/Downloads && rm -rf tmp && mkdir tmp && mv logs.tar.gz tmp && cd tmp && tar zxvf logs.tar.gz && cd tmp/tmp*"
 #alias vim=vi
 
 # ex - archive extractor
@@ -195,7 +196,7 @@ whensleep() {
 
 ptest() {
   if [[ -f ./TEST_ENV ]]; then
-    eval `cat ./TEST_ENV  | awk '{print "export " $1}'`
+    eval $(cat TEST_ENV | sed -r s/\(.*\)=\(.*\)/export\ \\1=\'\\2\'/g)
     python manage.py test "$@"
   else
     TESTING=True python manage.py test "$@"
@@ -246,12 +247,13 @@ _t() {
   return 0
 }
 
+complete -F _t t
+
 title() {
   i="\033]0;$@\007";
   PROMPT_COMMAND='echo -ne $i'
 }
 
-complete -F _t t
 
 # export ATLAS_MVN=`which mvn`
 export PATH=/home/sindri/dev/tempo/dolly/tempoc/bin:$PATH # Tempo CLI
@@ -269,3 +271,6 @@ export PATH=$PATH:/home/sindri/go/bin
 export GOPATH="/home/sindri/go"
 
 eval "$(pyenv virtualenv-init -)"
+
+export PATH="$HOME/.poetry/bin:$PATH"
+
