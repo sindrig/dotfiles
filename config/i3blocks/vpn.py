@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import os
+import time
 import signal
 import re
 import datetime
@@ -14,6 +15,7 @@ ACTIVE_REGEX = re.compile('GENERAL\.STATE:\s*activated')
 VPN_NAME = 'Tempo VPN'
 DISCONNECT_CONFIRM_FILE = '/tmp/vpn-confirm-file'
 dateformat = '%Y%m%d%H%M%S'
+CLIENT_CONF = '/etc/openvpn/client/tempo.conf'
 
 
 def get_disconnect_date():
@@ -33,7 +35,7 @@ def sudo(args):
         # stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        env={'SUDO_ASKPASS': '/usr/bin/x11-ssh-askpass', 'DISPLAY': ':0'}
+        env={'SUDO_ASKPASS': '/usr/bin/x11-ssh-askpass', 'DISPLAY': ':0'},
     )
 
 
@@ -42,10 +44,12 @@ def updown_vpn(active):
         if active:
             es = []
             for proc in openvpn_processes():
-                p = sudo([
-                    '/home/sindri/bin/killvpn.sh',
-                    '-%s' % (signal.SIGKILL.value),
-                ])
+                p = sudo(
+                    [
+                        '/home/sindri/bin/killvpn.sh',
+                        '-%s' % (signal.SIGKILL.value),
+                    ]
+                )
                 o, e = p.communicate()
                 if e:
                     es.append(e.decode('utf-8'))
@@ -56,15 +60,35 @@ def updown_vpn(active):
             with tempfile.NamedTemporaryFile(mode='w') as temp:
                 temp.write(auth)
                 temp.flush()
-                p = sudo([
-                    '/usr/bin/openvpn',
-                    '--daemon', 'tempovpn',
-                    '--config', '/etc/openvpn/client/tempo.conf',
-                    '--log', '/tmp/vpnlog.log',
-                    '--auth-user-pass',
-                    temp.name,
-                ])
-                o, e = p.communicate()
+                # p = sudo([
+                #     '/usr/bin/openvpn',
+                #     '--daemon', 'tempovpn',
+                #     '--config', CLIENT_CONF,
+                #     '--log', '/tmp/vpnlog.log',
+                #     '--auth-user-pass',
+                #     temp.name,
+                # ])
+                p = subprocess.run(
+                    [
+                        'xfce4-terminal',
+                        '--hold',
+                        '-e',
+                        ' '.join(
+                            [
+                                'sudo',
+                                '/usr/bin/openvpn',
+                                '--config',
+                                CLIENT_CONF,
+                                '--auth-user-pass',
+                                temp.name,
+                            ]
+                        ),
+                    ],
+                    capture_output=True,
+                )
+                o = p.stdout
+                e = p.stderr
+                time.sleep(1)
         if e:
             raise ValueError(e)
         logfile = os.path.join(os.path.dirname(__file__), 'vpn_log')
@@ -123,15 +147,12 @@ def get_auth():
         raise ValueError(e)
     data = json.loads(o)
     item = data[0]
-    return '%s\n%s' % (
-        item['username'],
-        item['password'],
-    )
+    return '%s\n%s' % (item['username'], item['password'],)
 
 
 def openvpn_processes():
     for proc in psutil.process_iter(attrs=['name', 'pid']):
-        if proc.name() == 'openvpn' and 'tempovpn' in proc.cmdline():
+        if proc.name() == 'openvpn' and CLIENT_CONF in proc.cmdline():
             yield proc
 
 
