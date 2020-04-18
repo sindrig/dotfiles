@@ -42,8 +42,12 @@ alias mirrors='sudo pacman-mirrors -g'
 alias db='sudo pacman -Syy'
 alias printer='system-config-printer'
 alias clip="xclip -selection c"
-alias logs="cd ~/Downloads && rm -rf tmp && mkdir tmp && mv logs.tar.gz tmp && cd tmp && tar zxvf logs.tar.gz && cd tmp/tmp*"
+#alias logs="cd ~/Downloads && rm -rf tmp && mkdir tmp && mv logs.tar.gz tmp && cd tmp && tar zxvf logs.tar.gz && cd tmp/tmp*"
 #alias vim=vi
+
+function logs() {
+	cd $(logs.py $1)
+}
 
 # ex - archive extractor
 # usage: ex <file>

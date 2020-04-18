@@ -1,9 +1,9 @@
 #!/bin/bash
 
-EDP1=eDP-1-1
+EDP1=eDP1
 DP21=VIRTUAL1
 DP22=VIRTUAL2
-DP23=HDMI-0
+DP23=VIRTUAL3
 
 PRIMARY_MODE="2048x1152"
 PRIMARY_SINGLE_MODE="3840x2160"
@@ -14,7 +14,12 @@ XRANDR="/usr/bin/xrandr $XRANDR_FLAGS"
 
 DISP=${DISPLAY:-":0"}
 
+kill-intel-virtual-output() {
+    ps -ef | grep [i]ntel-virtual-output | tr -s " " | cut -d" " -f2 | xargs -r kill -9
+}
+
 ws-wrk() {
+    intel-virtual-output
     $XRANDR --output $EDP1 --mode $PRIMARY_MODE
     $XRANDR --output $DP21 --left-of $EDP1 --mode $SECONDARY_MODE --rotate normal
     $XRANDR --output $DP22 --left-of $DP21 --mode $SECONDARY_MODE --rotate left
@@ -26,12 +31,14 @@ ws-wrk() {
 }
 
 ws-home() {
+    intel-virtual-output
     $XRANDR --output $EDP1 --mode $PRIMARY_MODE
     $XRANDR --output $DP23 --mode $SECONDARY_MODE --left-of $EDP1
 }
 
 ws-single() {
-    $XRANDR --output $DP22 --off --output $DP21 --off --output $DP23 --off --output $EDP1 --mode $PRIMARY_MODE
+    # $XRANDR --dpi 288 --output VIRTUAL3 --off --output DP-2-3 --off --output $DP22 --off --output $DP21 --off --output HDMI-1 --off --output DP-1 --off --output $EDP1 --mode $PRIMARY_SINGLE_MODE
+    $XRANDR --output VIRTUAL3 --off --output DP-2-3 --off --output $DP22 --off --output $DP21 --off --output HDMI-1 --off --output DP-1 --off --output $EDP1 --mode $PRIMARY_MODE
 }
 
 check-primary-mode-exists() {
