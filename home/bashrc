@@ -30,12 +30,6 @@ if ! shopt -oq posix; then
 fi
 
 
-# if [ -f "$HOME/sources/bash-git-prompt/gitprompt.sh" ]; then
-#    GIT_PROMPT_ONLY_IN_REPO=1
-# TODO: Look into why this overrides everything
-    # source $HOME/sources/bash-git-prompt/gitprompt.sh
-# fi
-
 colorize(){
     echo "\[\e[$1\]$2\[\e[0m\]"
 }
@@ -60,15 +54,12 @@ KUBE_PS1_SYMBOL_ENABLE=false
 
 USER_P=$(colorize "0;33m" "\u")
 DIR_P=$(colorize "0;32m" "\w")
+GIT_P='$(__git_ps1)'
 PC_P=$(colorize "0;33m" "\$")
 source /home/sindri/sources/kube-ps1/kube-ps1.sh
 K8S_P='$(kube_ps1)'
 
 PS1="$USER_P->$DIR_P$GIT_P $K8S_P $PC_P "
-
-if [ ! -z ${OP_SUBDOMAIN+x} ]; then
-  PS1='(1pass: $OP_SUBDOMAIN)'$PS1
-fi
 
 PS1='$(show_virtual_env)'$PS1
 
@@ -79,16 +70,16 @@ if [[ "$SSH_AGENT_PID" == "" ]]; then
     eval "$(<~/.ssh-agent-thing)" > /dev/null 2>&1
 fi
 
+DEVDIRS=('/home/sindri/dev/' '/home/sindri/dev/andes/')
+
 t() {
-  dev-cd $1 /dev/tempo/dolly/src/ || dev-cd $1 /dev/ || dev-cd $1 /dev/tempo/
+  for i in "${DEVDIRS[@]}"; do dev-cd $1 "$i" && return; done
 }
 
 dev-cd() {
     MODULE=$1;
     SEARCH_DIR=$2
-    homedir=~
-    eval homedir=$homedir
-    DIR="$homedir$SEARCH_DIR$MODULE";
+    DIR="$SEARCH_DIR$MODULE";
     if [ -d $DIR ]; then
         cd $DIR
     else
@@ -110,7 +101,7 @@ _t() {
 
   case "$cur" in
     *)
-    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/dolly/src/ ~/dev/tempo/ ~/dev/ | grep -v ":$" | sed 's/\/$//')" -- $cur ) );;
+    COMPREPLY=( $( compgen -W "$(ls ${DEVDIRS[@]} | grep -v ":$" | sed 's/\/$//')" -- $cur ) );;
   esac
 
   return 0
