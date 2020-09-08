@@ -1,0 +1,7 @@
+i3-wm.gaps.focus_follows_mouse: yes
+i3-wm.gaps.inner.size: 0
+i3-wm.gaps.outer.size: 0
+i3-wm.program.lock: /home/sindri/.i3/lock
+i3-wm.program.reboot: /usr/bin/gnome-session-quit --reboot --no-prompt
+i3-wm.program.logout: /usr/bin/gnome-session-quit --logout --no-prompt
+i3-wm.program.shutdown: /usr/bin/gnome-session-quit --power-off --no-prompt

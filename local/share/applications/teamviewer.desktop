@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Name=Teamviewer
-Comment=Teamviewer
-Exec=~/bin/teamviewer
-Icon=utilities-terminal
-Type=Application
-Categories=Application;

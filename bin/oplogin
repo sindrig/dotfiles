@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-OP_SUBDOMAIN=tempo
-token=$(lpass show 1password.com --password | op signin tempo --output=raw)
-/usr/bin/env OP_SESSION_$OP_SUBDOMAIN=$token OP_SUBDOMAIN=$OP_SUBDOMAIN bash
