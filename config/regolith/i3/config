@@ -81,7 +81,7 @@ set_from_resource $rofiTheme rofi.theme /etc/regolith/styles/lascaille/rofi.rasi
 
 ## Launch // Application // <> Space ##
 set_from_resource $i3-wm.program.launcher.app i3-wm.program.launcher.app rofi -show drun -theme $rofiTheme
-#bindsym $mod+space exec $i3-wm.program.launcher.app
+# bindsym $mod+space exec $i3-wm.program.launcher.app
 
 ## Launch // Command // <><Shift> Space ##
 set_from_resource $i3-wm.program.launcher.cmd i3-wm.program.launcher.cmd rofi -show run -theme $rofiTheme
@@ -296,11 +296,11 @@ set_from_resource $i3-wm.program.display i3-wm.program.display gnome-control-cen
 
 ## Modify // Wifi Settings // <> w ##
 set_from_resource $i3-wm.program.wifi i3-wm.program.wifi gnome-control-center wifi
-#bindsym $mod+w exec $i3-wm.program.wifi
+# bindsym $mod+w exec $i3-wm.program.wifi
 
 ## Modify // Bluetooth Settings // <> b ##
 set_from_resource $i3-wm.program.bluetooth i3-wm.program.bluetooth gnome-control-center bluetooth
-#bindsym $mod+b exec $i3-wm.program.bluetooth
+# bindsym $mod+b exec $i3-wm.program.bluetooth
 
 ## Launch // File Browser // <><Shift> n ##
 set_from_resource $i3-wm.program.files i3-wm.program.files /usr/bin/nautilus --new-window
