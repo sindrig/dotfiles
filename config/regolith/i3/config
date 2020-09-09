@@ -532,11 +532,6 @@ exec --no-startup-id $i3-wm.program.3
 new_window pixel 2
 new_float normal
 
-# Swap layouts
-#bindsym $mod+i exec notify-send "$(~/bin/swaplayout.sh)"
-
-# start program launcher
-# set_from_resource $i3-wm.program.launcher.app i3-wm.program.launcher.app rofi -show drun -theme $rofiTheme
 bindsym $mod+d exec $i3-wm.program.launcher.app
 
 bindsym --release Print exec notify-send 'selection will be saved to ~/Screenshots' && exec scrot -se 'xclip -selection clipboard -t "image/png" < $f && mv $f ~/Screenshots'
