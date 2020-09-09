@@ -115,7 +115,7 @@ title() {
 }
 
 export PYENV_ROOT="$HOME/sources/pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+export PATH="$PYENV_ROOT/bin:/home/sindri/sources/py-bins/bin:$PATH"
 
 eval "$(direnv hook bash)"
 eval "$(pyenv init -)"
