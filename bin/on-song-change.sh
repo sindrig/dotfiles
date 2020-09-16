@@ -1,7 +1,3 @@
 #!/bin/sh
 
-status=$(baton status)
-song_name=`echo "$status" | grep '^Track' | cut -d" " -f2-`
-artist=`echo "$status" | grep '^Artist' | cut -d" " -f2-`
-echo "$song_name by $artist" > ~/.current-spotify-song
-echo "$song_name by $artist" > ~/.current-spotify-song
+notify-send "$(baton status)" >> ~/.current-spotify-song.log 2>&1
