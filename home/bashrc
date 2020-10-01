@@ -120,6 +120,7 @@ export PATH="/home/sindri/sources/tfenv/bin:$PATH"
 
 eval "$(direnv hook bash)"
 eval "$(pyenv init -)"
+eval "$(gh completion -s bash)"
 
 # eval "$(pyenv virtualenv-init -)"
 
