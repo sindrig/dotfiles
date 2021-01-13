@@ -1,6 +1,8 @@
 layout_python() {
   local python=${1:-python}
   [[ $# -gt 0 ]] && shift
+  local venv_name=${1:-venv}
+  [[ $# -gt 0 ]] && shift
   unset PYTHONHOME
 
   local python_version
@@ -14,7 +16,7 @@ layout_python() {
     mkdir $(direnv_layout_dir)
   fi
 
-  VIRTUAL_ENV=$(direnv_layout_dir)/../venv
+  VIRTUAL_ENV=$(direnv_layout_dir)/../$venv_name
   export VIRTUAL_ENV
   if [[ ! -d $VIRTUAL_ENV ]]; then
     virtualenv "--python=$python" "$@" "$VIRTUAL_ENV"

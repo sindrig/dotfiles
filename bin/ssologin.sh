@@ -1,6 +1,6 @@
 #!/bin/bash
 
-envs=('prod' 'dev' 'staging' 'shared')
+envs=('ids-prod' 'prod' 'dev' 'staging' 'shared')
 pids=()
 for i in ${envs[*]}; do
     aws sso login --profile ${i} &
