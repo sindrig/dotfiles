@@ -16,65 +16,19 @@ shopt -s extglob
 shopt -s histappend
 shopt -s hostcomplete
 
-export HISTSIZE=10000
-export HISTFILESIZE=${HISTSIZE}
-export HISTCONTROL=ignoreboth
-export JAVA_FONTS=/usr/share/fonts/TTF
 export EDITOR=/usr/bin/vim
 export VISUAL=$EDITOR
 export BROWSER=/usr/bin/google-chrome-stable
 export TERMINAL=/usr/bin/xfce4-terminal
-export PATH='/home/sindri/bin:/opt/atlassian-plugin-sdk/bin/:'$PATH
 
-alias ls='ls --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
-alias ll='ls -l --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
-alias la='ls -la --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
-alias grep='grep --color=tty -d skip'
-alias cp="cp -i"                          # confirm before overwriting something
-alias df='df -h'                          # human-readable sizes
-alias free='free -m'                      # show sizes in MB
-alias np='nano PKGBUILD'
-alias fixit='sudo rm -f /var/lib/pacman/db.lck'
-alias con='nano $HOME/.i3/config'
-alias comp='nano $HOME/.config/compton.conf'
-alias inst='sudo pacman -S'
-alias mirrors='sudo pacman-mirrors -g'
-alias db='sudo pacman -Syy'
-alias printer='system-config-printer'
-alias clip="xclip -selection c"
-#alias logs="cd ~/Downloads && rm -rf tmp && mkdir tmp && mv logs.tar.gz tmp && cd tmp && tar zxvf logs.tar.gz && cd tmp/tmp*"
-#alias vim=vi
-
-function logs() {
-	cd $(logs.py $1)
-}
-
-# ex - archive extractor
-# usage: ex <file>
-ex ()
-{
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1     ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
-      *)           echo "'$1' cannot be extracted via ex()" ;;
-    esac
-  else
-    echo "'$1' is not a valid file"
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
   fi
-}
+fi
 
-# prompt
-. /usr/share/git/git-prompt.sh
 
 colorize(){
     echo "\[\e[$1\]$2\[\e[0m\]"
@@ -100,112 +54,14 @@ KUBE_PS1_SYMBOL_ENABLE=false
 
 USER_P=$(colorize "0;33m" "\u")
 DIR_P=$(colorize "0;32m" "\w")
-GIT_P=$(colorize "0;31m" "\$(__git_ps1)")
+GIT_P='$(__git_ps1)'
 PC_P=$(colorize "0;33m" "\$")
-source /opt/kube-ps1/kube-ps1.sh
+source /home/sindri/sources/kube-ps1/kube-ps1.sh
 K8S_P='$(kube_ps1)'
 
 PS1="$USER_P->$DIR_P$GIT_P $K8S_P $PC_P "
 
-if [ ! -z ${OP_SUBDOMAIN+x} ]; then
-  PS1='(1pass: $OP_SUBDOMAIN)'$PS1
-fi
-
 PS1='$(show_virtual_env)'$PS1
-
-
-# . /usr/share/autoenv-git/activate.sh
-
-# Add auto-completion for tempoc command
-if [ -f /home/sindri/dev/tempo/dev/tempo-cli/auto/autocomplete-tempoc ]; then
-    . /home/sindri/dev/tempo/dev/tempo-cli/auto/autocomplete-tempoc
-fi
-
-# Toggle ssh/https in git
-fuck() {
-  USERNAME=sindrig
-  CURRENT=$(git remote -v | head -n 1 | awk '{print $2}')
-  if [[ $CURRENT == ssh* ]]; then
-    UPDATED=$(echo $CURRENT | sed "s_ssh://git_https://${USERNAME}_" | sed 's_:7999_/scm_')
-    git remote set-url origin $UPDATED
-    echo $UPDATED
-  elif [[ $CURRENT == https* ]]; then
-    echo "CURRENT $CURRENT"
-    UPDATED=$(echo $CURRENT | sed "s_https://${USERNAME}_ssh://git_" | sed 's_/scm_:7999_')
-    git remote set-url origin $UPDATED
-    echo $UPDATED
-  else
-    echo "Doesn't seem to be a git repo?"
-  fi
-}
-
-export PATH=/home/sindri/sw/kubernetes/platforms/linux/amd64:$PATH
-export PATH=/home/sindri/sw/kubernetes/cluster:$PATH
-
-_npml ()   #  By convention, the function name
-{                 #+ starts with an underscore.
-  local cur
-  # Pointer to current completion word.
-  # By convention, it's named "cur" but this isn't strictly necessary.
-
-  COMPREPLY=()   # Array variable storing the possible completions.
-  cur=${COMP_WORDS[COMP_CWORD]}
-
-
-  case "$cur" in
-    *)
-    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/ | grep tempo | sed 's/\/$//')" -- $cur ) );;
-#   Generate the completion matches and load them into $COMPREPLY array.
-#   xx) May add more cases here.
-#   yy)
-#   zz)
-  esac
-
-  return 0
-}
-
-complete -F _npml npml
-
-_npmu ()   #  By convention, the function name
-{                 #+ starts with an underscore.
-  local cur
-  # Pointer to current completion word.
-  # By convention, it's named "cur" but this isn't strictly necessary.
-
-  COMPREPLY=()   # Array variable storing the possible completions.
-  cur=${COMP_WORDS[COMP_CWORD]}
-
-
-  case "$cur" in
-    *)
-    COMPREPLY=( $( compgen -W "$(find node_modules/\@temposoftware/ -type l | grep -v .bin | xargs basename)" -- $cur ) );;
-#   Generate the completion matches and load them into $COMPREPLY array.
-#   xx) May add more cases here.
-#   yy)
-#   zz)
-  esac
-
-  return 0
-}
-
-complete -F _npmu npmu
-
-whenwake() {
-    journalctl -b 0 |grep "PM: Finishing"
-}
-
-whensleep() {
-    journalctl -b 0 |grep "]: Suspending system..."
-}
-
-ptest() {
-  if [[ -f ./TEST_ENV ]]; then
-    eval $(cat TEST_ENV | sed -r s/\(.*\)=\(.*\)/export\ \\1=\'\\2\'/g)
-    python manage.py test "$@"
-  else
-    TESTING=True python manage.py test "$@"
-  fi
-}
 
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent > ~/.ssh-agent-thing
@@ -214,16 +70,16 @@ if [[ "$SSH_AGENT_PID" == "" ]]; then
     eval "$(<~/.ssh-agent-thing)" > /dev/null 2>&1
 fi
 
+DEVDIRS=('/home/sindri/dev/' '/home/sindri/dev/island-is/' '/home/sindri/dev/andes/')
+
 t() {
-  dev-cd $1 /dev/tempo/dolly/src/ || dev-cd $1 /dev/ || dev-cd $1 /dev/tempo/
+  for i in "${DEVDIRS[@]}"; do dev-cd $1 "$i" && return; done
 }
 
 dev-cd() {
     MODULE=$1;
     SEARCH_DIR=$2
-    homedir=~
-    eval homedir=$homedir
-    DIR="$homedir$SEARCH_DIR$MODULE";
+    DIR="$SEARCH_DIR$MODULE";
     if [ -d $DIR ]; then
         cd $DIR
     else
@@ -245,7 +101,7 @@ _t() {
 
   case "$cur" in
     *)
-    COMPREPLY=( $( compgen -W "$(ls ~/dev/tempo/dolly/src/ ~/dev/tempo/ ~/dev/ | grep -v ":$" | sed 's/\/$//')" -- $cur ) );;
+    COMPREPLY=( $( compgen -W "$(ls ${DEVDIRS[@]} | grep -v ":$" | sed 's/\/$//')" -- $cur ) );;
   esac
 
   return 0
@@ -258,23 +114,22 @@ title() {
   PROMPT_COMMAND='echo -ne $i'
 }
 
-
-# export ATLAS_MVN=`which mvn`
-export PATH=/home/sindri/dev/tempo/dolly/tempoc/bin:$PATH # Tempo CLI
-export LD_LIBRARY_PATH=/usr/local/lib
+export PYENV_ROOT="$HOME/sources/pyenv"
+export PATH="$PYENV_ROOT/bin:/home/sindri/sources/py-bins/bin:$PATH"
+export PATH="/home/sindri/sources/tfenv/bin:$PATH"
 
 eval "$(direnv hook bash)"
 eval "$(pyenv init -)"
+eval "$(gh completion -s bash)"
 
-# alias ruv="/home/sindri/Virtualenvs/ruv/bin/ruv"
+# eval "$(pyenv virtualenv-init -)"
 
-export NPM_CONFIG_PREFIX=~/.npm-global
+# alias aws="docker run --rm -it -v ~/.aws:/root/.aws amazon/aws-cli"
+source <(kubectl completion bash)
 
-export PATH=$PATH:~/.npm-global/bin
-export PATH=$PATH:/home/sindri/go/bin
-export GOPATH="/home/sindri/go"
 
-eval "$(pyenv virtualenv-init -)"
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export PATH="$HOME/.poetry/bin:$PATH"
-
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
