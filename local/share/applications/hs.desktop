@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Version=1.0
-Name=Toggle headset profile
-Comment=Toggle headset profile (a2dp/hsp)
-Path=/home/sindri/bin/
-Exec=/home/sindri/bin/hs.py

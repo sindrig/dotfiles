@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Version=1.0
-Name=Workspace: Work
-Comment=Switch to workspace work
-Path=/home/sindri/bin/
-Exec=/home/sindri/bin/ws wrk
