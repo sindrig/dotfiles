@@ -1,9 +1,21 @@
 #!/bin/bash
 
-envs=('ids-prod' 'prod' 'dev' 'staging' 'shared')
+customer=${1:-island}
+case $customer in
+    island)
+        envs=('ids-prod' 'prod' 'dev' 'staging' 'shared')
+        ;;
+    mms)
+        envs=('prod' 'dev' 'staging' 'shared')
+        ;;
+    *)
+        echo "Unknown customer $customer"
+        ;;
+esac
+
 pids=()
 for i in ${envs[*]}; do
-    aws sso login --profile ${i} &
+    aws sso login --profile $customer-${i} &
     pids+=($!)
 done
 
@@ -14,5 +26,6 @@ for pid in ${pids[*]}; do
 done
 
 echo "Finished all logins"
-aws ecr get-login-password --profile=shared | docker login --username AWS --password-stdin 821090935708.dkr.ecr.eu-west-1.amazonaws.com
+sharedaccountid=$(aws sts get-caller-identity --profile=$customer-shared --query=Account --output=text)
+aws ecr get-login-password --profile=$customer-shared | docker login --username AWS --password-stdin $sharedaccountid.dkr.ecr.eu-west-1.amazonaws.com
 echo

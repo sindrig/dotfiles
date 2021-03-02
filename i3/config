@@ -193,7 +193,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # Pause spotify
-bindsym $mod+F12 exec notify-send "$(baton transfer 7d9dc80583437c271e8654793a687016cccafefa)"
+bindsym $mod+F12 exec notify-send "$(baton transfer $(baton devices | grep -A2 Sindri-laptop | tail -n1 | cut -d" " -f2))"
 bindsym $mod+F11 exec systemctl restart spotifyd --user
 bindsym F12 exec notify-send "$(baton pause)"
 bindsym F10 exec baton prev && notify-send "$(baton status)"

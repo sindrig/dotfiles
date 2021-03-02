@@ -16,9 +16,24 @@ layout_python() {
 
   VIRTUAL_ENV=$(direnv_layout_dir)/../venv
   export VIRTUAL_ENV
+  
   if [[ ! -d $VIRTUAL_ENV ]]; then
     virtualenv "--python=$python" "$@" "$VIRTUAL_ENV"
   fi
 
   PATH_add "$VIRTUAL_ENV/bin"
+}
+
+export_function() {
+  local name=$1
+  local alias_dir=$PWD/.direnv/aliases
+  mkdir -p "$alias_dir"
+  PATH_add "$alias_dir"
+  local target="$alias_dir/$name"
+  if declare -f "$name" >/dev/null; then
+    echo "#!/usr/bin/env bash" > "$target"
+    declare -f "$name" >> "$target" 2>/dev/null
+    echo "$name "'"$@"' >> "$target"
+    chmod +x "$target"
+  fi
 }
