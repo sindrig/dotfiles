@@ -8,8 +8,12 @@ case $customer in
     mms)
         envs=('prod' 'dev' 'staging' 'shared')
         ;;
+    voda)
+        envs=('prod' 'dev' 'shared')
+	;;
     *)
         echo "Unknown customer $customer"
+	exit 1
         ;;
 esac
 
