@@ -8,7 +8,7 @@ output HDMI2
 off
 output VIRTUAL1
 off
-output eDP-1
+output eDP1
 crtc 0
 mode 2560x1440
 pos 0x0
