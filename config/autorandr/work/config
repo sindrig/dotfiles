@@ -1,8 +1,8 @@
-output DP1
+output DP-1
 off
-output DP2
+output DP-2
 off
-output DP2-1
+output DP-2-1
 off
 output HDMI1
 off
@@ -10,18 +10,18 @@ output HDMI2
 off
 output VIRTUAL1
 off
-output DP2-2
+output DP-2-2
 crtc 2
 mode 2560x1440
 pos 0x0
 rate 59.95
 rotate left
-output DP2-3
+output DP-2-3
 crtc 1
 mode 2560x1080
 pos 1440x0
 rate 59.98
-output eDP1
+output eDP-1
 crtc 0
 mode 2560x1440
 pos 4000x0

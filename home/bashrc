@@ -19,6 +19,7 @@ shopt -s hostcomplete
 export EDITOR=/usr/bin/vim
 export VISUAL=$EDITOR
 export BROWSER=/usr/bin/google-chrome-stable
+# export BROWSER=/usr/bin/brave
 export TERMINAL=/usr/bin/xfce4-terminal
 
 if ! shopt -oq posix; then
@@ -129,6 +130,7 @@ export PATH="$PYENV_ROOT/bin:/home/sindri/sources/py-bins/bin:$PATH"
 export PATH="/home/sindri/sources/tfenv/bin:$PATH"
 export PATH="/home/sindri/bin:$PATH"
 
+
 eval "$(direnv hook bash)"
 eval "$(pyenv init -)"
 eval "$(gh completion -s bash)"
@@ -166,3 +168,14 @@ pf-is(){
 }
 
 complete -C /var/lib/tfenv/versions/0.12.26/terraform terraform
+export TERM=xterm-256color
+
+. /etc/profile.d/autojump.bash
+
+function ot(){
+  (
+    cd /home/sindri/dev/overtime/
+    . .envrc 2> /dev/null
+    ./venv/bin/python main.py "$@"
+  )
+}

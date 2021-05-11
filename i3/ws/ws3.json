@@ -15,7 +15,7 @@
             "percent": 0.5,
             "swallows": [
                {
-               "class": "^Xfce4-terminal$"
+               "class": "^urxvt$"
                }
             ],
             "type": "con"
@@ -27,7 +27,7 @@
             "percent": 0.5,
             "swallows": [
                {
-               "class": "^Xfce4-terminal$"
+               "class": "^urxvt$"
                }
             ],
             "type": "con"
@@ -51,7 +51,7 @@
             "percent": 0.5,
             "swallows": [
                {
-               "class": "^Xfce4-terminal$"
+               "class": "^urxvt$"
                }
             ],
             "type": "con"
@@ -63,7 +63,7 @@
             "percent": 0.5,
             "swallows": [
                {
-               "class": "^Xfce4-terminal$"
+               "class": "^urxvt$"
                }
             ],
             "type": "con"
