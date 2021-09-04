@@ -178,6 +178,8 @@ for_window [class="Xfce4-terminal"] border normal
 for_window [class="mpv"] floating enable
 for_window [class="Xtensoftphone"] floating enable
 for_window [class="Peek"] floating enable
+for_window [class="Workrave"] border none
+for_window [class="Workrave"] floating enable
 
 
 # switch to workspace with urgent window automatically
@@ -260,7 +262,7 @@ bar {
 		inactive_workspace #A4A28D #000000 #DDDDDD
 		urgent_workspace #2ECC71 #900000 #FFFFFF
 	}
-    tray_output eDP-1
+    tray_output eDP1
 }
 
 # Autostart applications
@@ -280,6 +282,9 @@ exec --no-startup-id volumeicon
 
 # Turn on numlock
 exec --no-startup-id /usr/bin/numlockx on
+
+exec --no-startup-id workrave
+exec --no-startup-id blackd
 
 # Theme colors
 client.focused #2ECC71 #2ECC71 #000000 #FFFFFF

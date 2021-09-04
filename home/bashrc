@@ -127,6 +127,7 @@ title() {
 
 export PYENV_ROOT="$HOME/sources/pyenv"
 export PATH="$PYENV_ROOT/bin:/home/sindri/sources/py-bins/bin:$PATH"
+eval "$(pyenv init --path)"
 export PATH="/home/sindri/sources/tfenv/bin:$PATH"
 export PATH="/home/sindri/bin:$PATH"
 
@@ -179,3 +180,10 @@ function ot(){
     ./venv/bin/python main.py "$@"
   )
 }
+
+export GOPATH=/home/sindri/go
+
+export PATH="$PATH:/home/sindri/.dotnet/tools"
+export PATH="$PATH:/home/sindri/.linkerd2/bin"
+eval "$(register-python-argcomplete zappa)"
+
