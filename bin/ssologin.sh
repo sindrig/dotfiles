@@ -22,6 +22,10 @@ case $customer in
         ;;
 esac
 
+i=$envs
+aws-sso-util login --profile $customer-${i}
+envs=("${envs[@]:1}")
+
 pids=()
 for i in ${envs[*]}; do
     aws-sso-util login --profile $customer-${i} &
