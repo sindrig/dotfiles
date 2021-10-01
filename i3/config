@@ -262,7 +262,7 @@ bar {
 		inactive_workspace #A4A28D #000000 #DDDDDD
 		urgent_workspace #2ECC71 #900000 #FFFFFF
 	}
-    tray_output eDP1
+    tray_output eDP-1
 }
 
 # Autostart applications
@@ -274,6 +274,7 @@ exec --no-startup-id nm-applet
 # exec --no-startup-id clipit
 exec --no-startup-id udiskie --tray --use-udisks2
 # exec --no-startup-id compton --config /home/sindri/.config/compton.conf
+exec --no-startup-id compton
 # exec xinput set-prop "TPPS/2 IBM TrackPoint" "Device Enabled" 0
 exec --no-startup-id syndaemon -Kkd -i 1
 exec --no-startup-id xss-lock -- /home/sindri/.i3/lock

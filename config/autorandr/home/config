@@ -1,8 +1,8 @@
-output DP1
+output DP-1
 off
 output DP-2-1
 off
-output DP2-2
+output DP-2-2
 off
 output DP-2-3
 off
@@ -12,7 +12,7 @@ output HDMI2
 off
 output VIRTUAL1
 off
-output DP2
+output DP-2
 crtc 1
 mode 2560x1440
 pos 0x0
