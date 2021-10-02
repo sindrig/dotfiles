@@ -1,0 +1,189 @@
+# if [ -f /etc/bash.bashrc ]; then
+#    . /etc/bash.bashrc
+# fi
+
+xhost +local:root > /dev/null 2>&1
+
+
+complete -cf sudo
+
+shopt -s cdspell
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s dotglob
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s histappend
+shopt -s hostcomplete
+
+export EDITOR=/usr/bin/vim
+export VISUAL=$EDITOR
+export BROWSER=/usr/bin/google-chrome-stable
+# export BROWSER=/usr/bin/brave
+export TERMINAL=/usr/bin/xfce4-terminal
+
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+
+colorize(){
+    echo "\[\e[$1\]$2\[\e[0m\]"
+}
+
+show_virtual_env() {
+  if [ -n "$VIRTUAL_ENV" ]; then
+    echo "($(basename $VIRTUAL_ENV))"
+  fi
+}
+
+show_special_env() {
+  if [ -n "$SPECIAL_ENV" ]; then
+    echo -e " ($SPECIAL_ENV)"
+  fi
+}
+
+function get_cluster_short() {
+  echo "$1" | cut -d . -f1
+}
+
+function get_namespace_short() {
+    echo "$1" | cut -c1-10
+}
+
+KUBE_PS1_NAMESPACE_FUNCTION=get_namespace_short
+KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+KUBE_PS1_SYMBOL_ENABLE=false
+
+. ~/sources/git-completion.bash
+. ~/sources/git-prompt.sh
+
+USER_P=$(colorize "0;33m" "\u")
+DIR_P=$(colorize "0;32m" "\w")
+GIT_P='$(__git_ps1)'
+SPECIAL_P='$(show_special_env)'
+PC_P=$(colorize "0;33m" "\$")
+source /home/sindri/sources/kube-ps1/kube-ps1.sh
+K8S_P='$(kube_ps1)'
+
+PS1="$USER_P->$DIR_P$GIT_P $K8S_P$SPECIAL_P $PC_P "
+
+PS1='$(show_virtual_env)'$PS1
+
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > ~/.ssh-agent-thing
+fi
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+    eval "$(<~/.ssh-agent-thing)" > /dev/null 2>&1
+fi
+
+DEVDIRS=('/home/sindri/dev/' '/home/sindri/dev/island-is/' '/home/sindri/dev/andes/')
+
+t() {
+  for i in "${DEVDIRS[@]}"; do dev-cd $1 "$i" && return; done
+}
+
+dev-cd() {
+    MODULE=$1;
+    SEARCH_DIR=$2
+    DIR="$SEARCH_DIR$MODULE";
+    if [ -d $DIR ]; then
+        cd $DIR
+    else
+        echo "$DIR"
+        for d in $DIR*; do
+            [ -e "$d" ] || continue
+            cd $d && return 0
+        done
+        return 1
+    fi
+}
+
+_t() {
+  local cur
+
+  COMPREPLY=()   # Array variable storing the possible completions.
+  cur=${COMP_WORDS[COMP_CWORD]}
+
+
+  case "$cur" in
+    *)
+    COMPREPLY=( $( compgen -W "$(ls ${DEVDIRS[@]} | grep -v ":$" | sed 's/\/$//')" -- $cur ) );;
+  esac
+
+  return 0
+}
+
+complete -F _t t
+
+title() {
+  i="\033]0;$@\007";
+  PROMPT_COMMAND='echo -ne $i'
+}
+
+export PYENV_ROOT="$HOME/sources/pyenv"
+export PATH="$PYENV_ROOT/bin:/home/sindri/sources/py-bins/bin:$PATH"
+eval "$(pyenv init --path)"
+export PATH="/home/sindri/sources/tfenv/bin:$PATH"
+export PATH="/home/sindri/bin:$PATH"
+
+
+eval "$(direnv hook bash)"
+eval "$(pyenv init -)"
+eval "$(gh completion -s bash)"
+
+eval "$(pyenv virtualenv-init -)"
+
+# alias aws="docker run --rm -it -v ~/.aws:/root/.aws amazon/aws-cli"
+source <(kubectl completion bash)
+
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+function island(){
+  aws sso login --profile island-$1
+#  export AWS_PROFILE=<project-alias>-$1
+  $(aws-export-credentials --profile island-$1 --env-export)
+  kubectl config use-context island-$1
+}
+source /usr/share/nvm/init-nvm.sh
+
+function vodavpn(){
+  action=${1:-connect}
+  /opt/cisco/anyconnect/bin/vpn -s $action vpn.c.is
+}
+
+pf-is(){
+  fallback=$(basename $(dirname $(pwd)))
+  ctx=island-${1:-$fallback}
+  echo "Using $ctx"
+  kubectl --context=$ctx -n socat port-forward svc/socat-db 5432:5432
+}
+
+complete -C /var/lib/tfenv/versions/0.12.26/terraform terraform
+export TERM=xterm-256color
+
+. /etc/profile.d/autojump.bash
+
+function ot(){
+  (
+    cd /home/sindri/dev/overtime/
+    . .envrc 2> /dev/null
+    ./venv/bin/python main.py "$@"
+  )
+}
+
+export GOPATH=/home/sindri/go
+
+export PATH="$PATH:/home/sindri/.dotnet/tools"
+export PATH="$PATH:/home/sindri/.linkerd2/bin"
+eval "$(register-python-argcomplete zappa)"
+

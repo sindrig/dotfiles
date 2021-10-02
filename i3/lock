@@ -1,8 +1,0 @@
-#!/bin/sh
-#i3lock -c 111111 -f -i ~/.resources/showmewhatyougot.png
-# xscreensaver-command -lock
-
-#DIRECTORY=`dirname $0`
-#$DIRECTORY/lockmultimon.sh -i ~/.resources/showmewhatyougot.png
-
-i3lock -i /home/sindri/.resources/vikingur.png -t
