@@ -1,0 +1,11 @@
+profile work {
+  output DP-3 position 0,0 mode 2560x1440 transform 90
+  output DP-5 position 1440,0 mode 3440x1440
+  output eDP-1 position 4880,0 mode 3840x2160 scale 2
+  exec swaymsg workspace 2, move workspace to DP-5
+  exec swaymsg workspace 4, move workspace to DP-3
+}
+
+profile single {
+  output eDP-1 position 0,0 mode 3840x2160 scale 2
+}
