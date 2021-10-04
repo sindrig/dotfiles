@@ -1,10 +1,13 @@
-#!/bin/bash
-LG=$(setxkbmap -query | awk '/layout/{print $2}')
-if [ "$LG" == "is" ]
+#!/usr/bin/env bash
+set -euo pipefail
+
+KEYBOARD="1:1:AT_Translated_Set_2_keyboard"
+LG=$(swaymsg -t get_inputs | jq -r '.[] | select(.identifier == "'"$KEYBOARD"'") | .xkb_active_layout_name')
+if [ "$LG" == "Icelandic" ]
 then
-    setxkbmap -model pc105 -layout us
+    swaymsg input "$KEYBOARD" xkb_layout us -q
     echo "Layout: us"
 else
-    setxkbmap -model pc105 -layout is
+    swaymsg input "$KEYBOARD" xkb_layout is -q
     echo "Layout: is"
 fi

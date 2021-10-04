@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 customer=${1:-island}
 ecr_region=eu-west-1

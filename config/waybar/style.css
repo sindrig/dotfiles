@@ -1,0 +1,16 @@
+@import "/usr/share/sway/templates/waybar/style.css";
+
+window#waybar {
+    background: #000000;
+    /*border-bottom: 3px solid rgba(100, 114, 125, 0.5);*/
+    color: #e5e9f0;
+}
+
+* {
+    border: none;
+    border-radius: 0;
+    /*font-family: "Hack", "Noto Color Emoji", sans-serif;*/
+    font-size: 18px;
+    /*font-weight: bold;*/
+    min-height: 0;
+}
