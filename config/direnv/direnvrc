@@ -1,4 +1,4 @@
-layout_python() {
+legacy_layout_python() {
   local python=${1:-python}
   [[ $# -gt 0 ]] && shift
   unset PYTHONHOME
@@ -36,4 +36,10 @@ export_function() {
     echo "$name "'"$@"' >> "$target"
     chmod +x "$target"
   fi
+}
+
+aws-sso-login() {
+  local PROFILE=$1
+  aws sts get-caller-identity --profile $PROFILE > /dev/null || aws-sso-util login --profile $PROFILE > /dev/null
+  eval $(aws-export-credentials --profile $PROFILE --env-export)
 }

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+export BROWSER=firefox-beta
+
 customer=${1:-island}
 ecr_region=eu-west-1
 case $customer in

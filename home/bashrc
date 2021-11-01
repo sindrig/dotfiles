@@ -144,6 +144,7 @@ ex ()
 export EDITOR=/usr/bin/vim
 export VISUAL=$EDITOR
 export BROWSER=/usr/bin/google-chrome-stable
+# export BROWSER=/usr/bin/firefox-beta
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -194,13 +195,22 @@ PS1='$(show_virtual_env)'$PS1
 . ~/sources/git-completion.bash
 . ~/sources/git-prompt.sh
 . /etc/profile.d/autojump.bash
+alias t=j
+
+load-ssh-agent(){
+    if [[ "$SSH_AGENT_PID" == "" ]]; then
+        eval "$(<~/.ssh-agent-thing)" > /dev/null 2>&1
+    fi
+}
 
 
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent > ~/.ssh-agent-thing
-fi
-if [[ "$SSH_AGENT_PID" == "" ]]; then
-    eval "$(<~/.ssh-agent-thing)" > /dev/null 2>&1
+    load-ssh-agent
+    ssh-add /home/sindri/.ssh/id_rsa
+    ssh-add /home/sindri/.ssh/id_rsa_kaptio
+else
+    load-ssh-agent
 fi
 
 
@@ -218,13 +228,22 @@ eval "$(pyenv virtualenv-init -)"
 
 # alias aws="docker run --rm -it -v ~/.aws:/root/.aws amazon/aws-cli"
 source <(kubectl completion bash)
+source <(k9s completion bash)
 eval "$(register-python-argcomplete zappa)"
 eval "$(register-python-argcomplete pipx)"
 complete -C /var/lib/tfenv/versions/0.12.26/terraform terraform
+complete -C '/usr/bin/aws_completer' aws
 
-export NVM_DIR="/usr/share/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+export NVM_DIR="/home/sindri/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh"  # This loads nvm
+else
+    . /usr/share/nvm/nvm.sh
+    . /usr/share/nvm/bash_completion
+fi
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export TFENV_CONFIG_DIR=/home/sindri/.config/tfenv
 
 
 function ot(){
@@ -234,3 +253,6 @@ function ot(){
     ./venv/bin/python main.py "$@"
   )
 }
+
+
+export GOPATH=/home/sindri/go
