@@ -1,14 +1,12 @@
 # Initial Setup 
-# exec ~/set_once.sh
+exec ~/set_once.sh
 
-include $HOME/.config/sway/definitions
-include $HOME/.config/sway/definitions.d/*.conf
+# Config for sway
+#
+# Read `man 5 sway` for a complete reference.
 
-# enable modes
-include $HOME/.config/sway/modes/*
+# user config directory
+include $HOME/.config/sway/config.d/*
 
 # only enable this if every app you use is compatible with wayland
 # xwayland disable
-
-# user config
-include $HOME/.config/sway/config.d/*.conf
