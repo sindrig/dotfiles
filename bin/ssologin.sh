@@ -3,22 +3,12 @@ set -euo pipefail
 
 export BROWSER=firefox-beta
 
-customer=${1:-island}
+customer=${1:-syndis}
 ecr_region=eu-west-1
 case $customer in
-    island)
-        envs=('ids-prod' 'prod' 'dev' 'staging' 'shared')
-        ;;
-    mms)
-        envs=('prod' 'dev' 'staging' 'shared')
-        ;;
-    voda)
+    syndis)
         envs=('prod' 'dev' 'shared')
-	;;
-    reon-standby)
-        envs=('dev' 'shared')
-        ecr_region=us-east-1
-	;;
+        ;;
     *)
         echo "Unknown customer $customer"
 	exit 1

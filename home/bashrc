@@ -256,3 +256,4 @@ function ot(){
 
 
 export GOPATH=/home/sindri/go
+export PATH="/home/sindri/.local/bin/:$PATH"

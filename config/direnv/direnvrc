@@ -39,6 +39,8 @@ export_function() {
 }
 
 aws-sso-login() {
+  # TEMP:
+  export BROWSER=firefox-beta
   local PROFILE=$1
   aws sts get-caller-identity --profile $PROFILE > /dev/null || aws-sso-util login --profile $PROFILE > /dev/null
   eval $(aws-export-credentials --profile $PROFILE --env-export)
