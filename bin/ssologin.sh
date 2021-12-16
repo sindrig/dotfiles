@@ -1,12 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-export BROWSER=firefox-beta
 
 customer=${1:-syndis}
 ecr_region=eu-west-1
 case $customer in
     syndis)
+        # always in ff
+        export BROWSER=firefox-beta
         envs=('prod' 'dev' 'shared')
         ;;
     *)
