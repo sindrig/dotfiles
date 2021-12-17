@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -xo pipefail
 #
 # Use rofi/zenity to change system runstate thanks to systemd.
 #
@@ -118,7 +119,7 @@ menu=(
   [ Reboot]="systemctl reboot"
   [ Suspend]="systemctl suspend"
   [ Hibernate]="systemctl hibernate"
-  [ Lock]="~/.config/i3/scripts/blur-lock.sh"
+  [ Lock]="~/.config/i3/scripts/blur-lock"
   [ Logout]="i3-msg exit"
   [ Cancel]=""
 )
