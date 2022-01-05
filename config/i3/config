@@ -50,30 +50,47 @@ bindsym $mod+Shift+9    move container to workspace  $ws9
 bindsym $mod+Shift+0    move container to workspace  $ws10
 
 
-# resize window (you can also use the mouse for that):
-#mode "resize" {
-# These bindings trigger as soon as you enter the resize mode
-# Pressing left will shrink the window’s width.
-# Pressing right will grow the window’s width.
-# Pressing up will shrink the window’s height.
-# Pressing down will grow the window’s height.
-#        bindsym j resize shrink width 10 px or 10 ppt
-#        bindsym k resize grow height 10 px or 10 ppt
-#        bindsym l resize shrink height 10 px or 10 ppt
-#        bindsym ntilde resize grow width 10 px or 10 ppt
+mode "resize" {
+	bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize shrink height 10 px or 10 ppt
+        bindsym Up resize grow height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
 
-# same bindings, but for the arrow keys
-#	bindsym Left resize shrink width 10 px or 10 ppt
-#        bindsym Down resize grow height 10 px or 10 ppt
-#        bindsym Up resize shrink height 10 px or 10 ppt
-#        bindsym Right resize grow width 10 px or 10 ppt
+	bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize shrink height 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
 
-# back to normal: Enter or Escape
-#	bindsym Return mode "default"
-#        bindsym Escape mode "default"
-#}
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
 
-#bindsym $mod+r mode "resize"
+bindsym $mod+r mode "resize"
+
+
+set $mode_screenshot Cature: [p]ick [o]utput ([+Shift] save) ([+Ctrl+Shift] upload)
+
+set $scrot scrot
+set $tmp_filename /tmp/screenshot-$(date +%F_%T).png
+set $scrot_filename -F ~/%Y-%m-%d-%T-screenshot.png -e 'notify-send $f'
+set $image_upload -e '/home/sindri/bin/upload-image.sh $f'
+set $clipboard -e 'xclip -selection c -t image/png < $f'
+
+mode "$mode_screenshot" {
+    bindsym --release o mode "default", exec "$scrot $tmp_filename $clipboard"
+    bindsym --release Shift+o mode "default", exec "scrot $scrot_filename"
+    bindsym --release Shift+Ctrl+o mode "default", exec "$scrot $tmp_filename $image_upload"
+    bindsym --release p mode "default", exec "$scrot $tmp_filename -s $clipboard"
+    bindsym --release Shift+p mode "default", exec "scrot $scrot_filename -s"
+    bindsym --release Shift+Ctrl+p mode "default", exec "$scrot $tmp_filename -s $image_upload"
+
+    # Return to default mode.
+    bindsym Escape mode "default"
+}
+
+## Launch // Screenshot Mode ##
+bindsym Print mode "$mode_screenshot"
+
 
 bindsym $mod+Return exec xfce4-terminal
 bindsym $mod+Shift+q kill
@@ -134,11 +151,18 @@ bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
+bindsym F10 exec spt playback -p
+bindsym F11 exec spt playback -n
+bindsym F12 exec spt playback -t
+bindsym $mod+F10 [title=spotify class=Xfce4-terminal] scratchpad show
+bindsym $mod+F11 exec systemctl restart spotifyd --user
+bindsym $mod+F12 exec spt playback --transfer Sindri-laptop
+
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
 # Redirect sound to headphones
 bindsym $mod+p exec /usr/local/bin/switch-audio-port
-
-## App shortcuts
-bindsym Print exec "scrot ~/%Y-%m-%d-%T-screenshot.png"
 
 set $ws1 "1:slack"
 set $ws2 "2:www"
@@ -159,6 +183,7 @@ workspace $ws4 output DP3-3
 for_window [class=Xfce4-terminal] focus
 for_window [class=(?i)firefox] focus
 for_window [class=Thunar] focus
+for_window [title=spotify class=Xfce4-terminal] move scratchpad
 
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
@@ -171,7 +196,7 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id dex --autostart --environment i3
 
 #exec --no-startup-id setxkbmap -layout 'us,sk' -variant altgr-intl,qwerty -option 'grp:alt_caps_toggle'
-exec --no-startup-id setxkbmap -option grp:switch,grp:caps_toggle,grp_led:caps us,is
+exec_always --no-startup-id setxkbmap -option grp:switch,grp:caps_toggle,grp_led:caps us,is
 
 # start conky:
 #exec_always --no-startup-id conky
@@ -180,6 +205,7 @@ exec --no-startup-id autorandr --change
 
 # start blueberry app for managing bluetooth devices from tray:
 exec --no-startup-id blueberry-tray
+exec --no-startup-id blackd
 
 # transparency
 # uncomment one of them to be used (picom package is installed per default)

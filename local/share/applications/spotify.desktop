@@ -2,4 +2,4 @@
 Version=1.0
 Name=Spotify
 Type=Application
-Exec=foot -T Spotify -a spotify spt
+Exec=xfce4-terminal --title Spotify --startup-id spotify --command spt
