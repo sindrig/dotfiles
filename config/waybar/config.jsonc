@@ -9,7 +9,7 @@
         "format": "{}",
         "tooltip": true,
         "interval": 3600,
-        "exec": "/usr/share/sway/scripts/weather.py 'reykjavik'", 
+        "exec": "/usr/share/sway/scripts/weather.py 'reykjavik'",
         "return-type": "json"
     }
 }

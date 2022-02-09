@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-export BROWSER=firefox-beta
+export BROWSER=firefox
 
 customer=${1:-syndis}
 ecr_region=eu-west-1
@@ -17,6 +17,10 @@ esac
 
 i=$envs
 aws-sso-util login --profile $customer-${i}
+if ! aws sts get-caller-identity --profile $customer-${i}; then
+	rm -rf ~/.aws/sso/cache/*.json
+	aws-sso-util login --profile $customer-${i}
+fi
 envs=("${envs[@]:1}")
 
 pids=()
