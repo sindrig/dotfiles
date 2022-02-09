@@ -1,7 +1,9 @@
 {
     "include": [
-        "/usr/share/sway/templates/waybar/config.jsonc"
+        "/etc/xdg/waybar/config"
     ],
+    "modules-left": ["sway/workspaces"],
+    "modules-center": ["sway/mode"],
     "position": "bottom",
     "height": 20,
     "custom/weather": {

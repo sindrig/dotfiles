@@ -1,9 +1,0 @@
-profile single {
-  output eDP-1 position 0,0 mode 3840x2160
-}
-
-profile work {
-	output eDP-1 mode 3840x2160 position 6000,380 transform normal
-	output DP-5 mode 3840x2160 position 2160,380 transform normal
-	output DP-7 mode 3840x2160 position 0,0 transform 270
-}

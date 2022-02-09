@@ -39,6 +39,7 @@ shopt -s histappend
 
 export EDITOR=/usr/bin/vim
 export VISUAL=$EDITOR
+alias vim=$EDITOR
 export BROWSER=/usr/bin/google-chrome-stable
 # export BROWSER=/usr/bin/firefox-beta
 
@@ -69,7 +70,6 @@ PS1='$(show_virtual_env)'$PS1
 . ~/sources/git-completion.bash
 . ~/sources/git-prompt.sh
 
-. /etc/profile.d/autojump.bash
 alias t=j
 
 load-ssh-agent(){
@@ -102,9 +102,9 @@ eval "$(register-python-argcomplete pipx)"
 complete -C /var/lib/tfenv/versions/1.0.0/terraform terraform
 complete -C '/usr/bin/aws_completer' aws
 
-export NVM_DIR="/home/sindri/.nvm"
-. /usr/share/nvm/nvm.sh
-. /usr/share/nvm/bash_completion
+# export NVM_DIR="/home/sindri/.nvm"
+# . /usr/share/nvm/nvm.sh
+# . /usr/share/nvm/bash_completion
 
 export GOPATH=/home/sindri/go
 export PATH="/home/sindri/.local/bin/:$PATH"
