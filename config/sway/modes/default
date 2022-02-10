@@ -99,6 +99,12 @@ bindsym $mod+Shift+8 move container to workspace $ws8, exec $focus_ws $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9, exec $focus_ws $ws9
 bindsym $mod+Shift+0 move container to workspace $ws10, exec $focus_ws $ws10
 
+# Move between monitors
+bindsym $mod+Mod1+$left move workspace to output left;
+bindsym $mod+Mod1+$right move workspace to output right;
+
+bindsym Mod1+tab workspace back_and_forth
+
 #
 # Layout stuff:
 #
@@ -134,3 +140,18 @@ bindsym $mod+question exec $help
 
 default_border pixel 1
 hide_edge_borders smart
+
+
+bindsym F10 exec spt playback -p
+bindsym F11 exec spt playback -n
+bindsym F12 exec spt playback -t
+bindsym $mod+F10 exec swaymsg '[app_id=spotify]' scratchpad show
+bindsym $mod+F11 exec systemctl restart spotifyd --user
+bindsym $mod+F12 exec spt playback --transfer Sindri-laptop
+
+for_window [app_id=spotify] move to scratchpad
+for_window [title=TeamViewer] floating enable
+
+assign [app_id="google-chrome"] workspace $ws2
+assign [app_id="firefox"] workspace $ws2
+assign [app_id="sublime_text"] workspace $ws4

@@ -2,4 +2,4 @@
 Version=1.0
 Name=Spotify
 Type=Application
-Exec=foot -T Spotify -a spotify spt
+Exec=alacritty -t Spotify --class spotify -e spt

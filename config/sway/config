@@ -19,8 +19,11 @@ bar {
 
 set $WOBSOCK $XDG_RUNTIME_DIR/wob.sock
 exec mkfifo $WOBSOCK && tail -f $WOBSOCK | wob
+exec way-displays > /tmp/way-displays.${XDG_VTNR}.${USER}.log 2>&1
 
 include definitions
 include theme
+include inputs/*
+include outputs/*
 include /etc/sway/config.d/*
 include modes/*

@@ -16,11 +16,12 @@ set $brightness_up light -r -A $($brightness_step) && light -G | cut -d'.' -f1 >
 set $brightness_down light -r -U $($brightness_step) && light -G | cut -d'.' -f1 > $WOBSOCK
 
 # audio control
+set $sink_volume pactl get-sink-volume @DEFAULT_SINK@ | grep '^Volume:' | cut -d / -f 2 | tr -d ' ' | sed 's/%//'
 set $source_volume pactl get-source-volume @DEFAULT_SOURCE@ | grep '^Volume:' | cut -d / -f 2 | tr -d ' ' | sed 's/%//'
+set $volume_down pactl set-sink-volume @DEFAULT_SINK@ -5% && $sink_volume > $WOBSOCK
+set $volume_up pactl set-sink-volume @DEFAULT_SINK@ +5% && $sink_volume > $WOBSOCK
+set $volume_mute pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl get-sink-mute @DEFAULT_SINK@ | sed -En "/no/ s/.*/$($sink_volume)/p; /yes/ s/.*/0/p" > $WOBSOCK
 set $mic_mute pactl set-source-mute @DEFAULT_SOURCE@ toggle && pactl get-source-mute @DEFAULT_SOURCE@ | sed -En "/no/ s/.*/$($source_volume)/p; /yes/ s/.*/0/p" > $WOBSOCK
-set $volume_up amixer sset Master 5%+ | sed -En 's/.*\[([0-9]+)%\].*/\1/p' | head -1 > $WOBSOCK
-set $volume_down exec amixer sset Master 5%- | sed -En 's/.*\[([0-9]+)%\].*/\1/p' | head -1 > $WOBSOCK
-set $volume_mute exec amixer sset Master toggle | sed -En '/\[on\]/ s/.*\[([0-9]+)%\].*/\1/ p; /\[off\]/ s/.*/0/p' | head -1 > $WOBSOCK
 
 
 # rofi theme
@@ -30,18 +31,11 @@ set $rofi_theme "* {lightbg: $background-color; background: $background-color; l
 set $clipboard cliphist list | rofi -dmenu -font "$gui-font" -p "Select item to copy" -lines 10 -width 35 -theme-str $rofi_theme | cliphist decode | wl-copy
 set $clipboard-del cliphist list | rofi -dmenu -font "$gui-font" -p "Select item to delete" -lines 10 -width 35 -theme-str $rofi_theme | cliphist delete
 
-# zeit tracking
-set $zeit_list zeit list --only-projects-and-tasks --append-project-id-to-task | \
-    rofi -dmenu -font "$gui-font" -p "Select task to track" -lines 10 -width 35 -theme-str $rofi_theme | \
-    /usr/share/sway/scripts/zeit.sh track && \
-    pkill -RTMIN+10 waybar
-
 # Your preferred application launcher
-# set $menu rofi -show combi -combi-modi "drun,run" -terminal $term -ssh-command "{terminal} {ssh-client} {host} [-p {port}]" -run-shell-command "{terminal} {cmd}" -show-icons -font "$gui-font" -lines 10 -width 35 -theme-str $rofi_theme
-set $menu dmenu_path | dmenu | xargs swaymsg exec --
+set $menu rofi -show combi -combi-modi "drun,run" -terminal $term -ssh-command "{terminal} {ssh-client} {host} [-p {port}]" -run-shell-command "{terminal} {cmd}" -show-icons -font "$gui-font" -lines 10 -width 35 -theme-str $rofi_theme
 
 ### Lockscreen configuration
-set $locking swaylock --daemonize --color "$selection-color" --inside-color "$selection-color" --inside-clear-color "$text-color" --ring-color "$color2" --ring-clear-color "$color11" --ring-ver-color "$color13" --show-failed-attempts --fade-in 0.2 --grace 2 --effect-vignette 0.5:0.5 --effect-blur 7x5 --ignore-empty-password --screenshots --clock
+set $locking swaylock -c '#000000' --inside-color '#ff0000' -eFfkl
 
 ###Notification daemon configuration
 set $notifications mako --font "$term-font" --text-color "$text-color" --border-color "$accent-color" --background-color "$background-color" --border-size 3 --width 400 --height 200 --padding 20 --margin 20 --default-timeout 15000

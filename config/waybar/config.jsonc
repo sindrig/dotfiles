@@ -2,8 +2,27 @@
     "include": [
         "/etc/xdg/waybar/config"
     ],
-    "modules-left": ["sway/workspaces"],
-    "modules-center": ["sway/mode"],
+    "modules-left": [
+        "sway/workspaces"
+    ],
+    "modules-center": [
+        "sway/mode"
+    ],
+    "modules-right": [
+        "idle_inhibitor",
+        "pulseaudio",
+        "network",
+        "cpu",
+        "memory",
+        "temperature",
+        "backlight",
+        "keyboard-state",
+        "sway/language",
+        "battery",
+        "battery#bat2",
+        "clock",
+        "tray"
+    ],
     "position": "bottom",
     "height": 20,
     "custom/weather": {
