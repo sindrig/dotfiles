@@ -1,0 +1,16 @@
+input type:keyboard xkb_layout "us"
+
+input * {
+    xkb_options grp:caps_toggle,grp_led:caps
+
+    xkb_layout "is,us"
+
+    xkb_variant ","
+}
+
+input type:touchpad {
+      dwt enabled
+      tap enabled
+      natural_scroll disabled 
+}
+

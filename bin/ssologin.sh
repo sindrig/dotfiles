@@ -7,7 +7,7 @@ customer=${1:-syndis}
 ecr_region=eu-west-1
 case $customer in
     syndis)
-        envs=('prod' 'dev' 'shared')
+        envs=('prod' 'dev' 'heimdallr' 'shared')
         ;;
     *)
         echo "Unknown customer $customer"

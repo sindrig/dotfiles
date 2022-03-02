@@ -12,16 +12,19 @@ set $onscreen_bar bash /usr/share/sway/scripts/wob.sh "$accent-colorFF" "$backgr
 
 # brightness control
 set $brightness_step bash -c 'echo $(( $(light -Mr) / 100 * 5 < 1 ? 1 : $(( $(light -Mr) / 100 * 5 )) ))'
-set $brightness_up light -r -A $($brightness_step) && light -G | cut -d'.' -f1 > $WOBSOCK
-set $brightness_down light -r -U $($brightness_step) && light -G | cut -d'.' -f1 > $WOBSOCK
+set $brightness_up light -r -A $($brightness_step) && light -G | cut -d'.' -f1 > $wobsock
+set $brightness_down light -r -U $($brightness_step) && light -G | cut -d'.' -f1 > $wobsock
+
+# WOB socket
+set $wobsock $XDG_RUNTIME_DIR/wob.sock
 
 # audio control
 set $sink_volume pactl get-sink-volume @DEFAULT_SINK@ | grep '^Volume:' | cut -d / -f 2 | tr -d ' ' | sed 's/%//'
 set $source_volume pactl get-source-volume @DEFAULT_SOURCE@ | grep '^Volume:' | cut -d / -f 2 | tr -d ' ' | sed 's/%//'
-set $volume_down pactl set-sink-volume @DEFAULT_SINK@ -5% && $sink_volume > $WOBSOCK
-set $volume_up pactl set-sink-volume @DEFAULT_SINK@ +5% && $sink_volume > $WOBSOCK
-set $volume_mute pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl get-sink-mute @DEFAULT_SINK@ | sed -En "/no/ s/.*/$($sink_volume)/p; /yes/ s/.*/0/p" > $WOBSOCK
-set $mic_mute pactl set-source-mute @DEFAULT_SOURCE@ toggle && pactl get-source-mute @DEFAULT_SOURCE@ | sed -En "/no/ s/.*/$($source_volume)/p; /yes/ s/.*/0/p" > $WOBSOCK
+set $volume_down pactl set-sink-volume @DEFAULT_SINK@ -5% && $sink_volume > $wobsock
+set $volume_up pactl set-sink-volume @DEFAULT_SINK@ +5% && $sink_volume > $wobsock
+set $volume_mute pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl get-sink-mute @DEFAULT_SINK@ | sed -En "/no/ s/.*/$($sink_volume)/p; /yes/ s/.*/0/p" > $wobsock
+set $mic_mute pactl set-source-mute @DEFAULT_SOURCE@ toggle && pactl get-source-mute @DEFAULT_SOURCE@ | sed -En "/no/ s/.*/$($source_volume)/p; /yes/ s/.*/0/p" > $wobsock
 
 
 # rofi theme
@@ -48,8 +51,7 @@ set $notifications mako --font "$term-font" --text-color "$text-color" --border-
 set $idle swayidle -w \
     timeout 240 'light -G > /tmp/brightness && light -S 10' resume 'light -S $([ -f /tmp/brightness ] && cat /tmp/brightness || echo 100%)' \
     timeout 300 'exec $locking' \
-    timeout 600 'swaymsg "output * dpms off"' \
-    resume 'swaymsg "output * dpms on"' \
+    timeout 600 'systemctl suspend' \
     before-sleep 'playerctl pause' \
     before-sleep 'exec $locking'
 
@@ -79,8 +81,8 @@ set $ws9 number 9
 set $ws10 number 10
 
 # screenshot
-set $grimshot /usr/share/sway/scripts/grimshot
-set $image_upload /usr/share/sway/scripts/upload-image.sh
+set $grimshot grimshot
+set $image_upload /home/sindri/bin/upload-image.sh
 set $screenshot_screen_clipboard $grimshot --notify copy output
 set $screenshot_screen_file $grimshot --notify save output
 set $screenshot_screen_upload $screenshot_screen_file | xargs $image_upload

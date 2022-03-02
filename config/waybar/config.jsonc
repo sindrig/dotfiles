@@ -24,7 +24,7 @@
         "tray"
     ],
     "position": "bottom",
-    "height": 20,
+    //"height": 20,
     "custom/weather": {
         "icon-size": 42,
         "format": "{}",

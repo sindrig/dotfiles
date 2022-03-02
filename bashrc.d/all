@@ -88,23 +88,15 @@ else
 fi
 
 
-eval "$(pyenv init --path)"
 
 export PATH="/home/sindri/bin:$PATH"
 
 eval "$(direnv hook bash)"
-eval "$(pyenv init -)"
 eval "$(gh completion -s bash)"
 
-eval "$(pyenv virtualenv-init -)"
-
 eval "$(register-python-argcomplete pipx)"
-complete -C /var/lib/tfenv/versions/1.0.0/terraform terraform
-complete -C '/usr/bin/aws_completer' aws
+complete -C /home/sindri/sources/tfenv/versions/1.1.5/terraform  terraform
+complete -C '/home/sindri/bin/aws_completer' aws
 
-# export NVM_DIR="/home/sindri/.nvm"
-# . /usr/share/nvm/nvm.sh
-# . /usr/share/nvm/bash_completion
-
-export GOPATH=/home/sindri/go
+export GOPATH="/home/sindri/go"
 export PATH="/home/sindri/.local/bin/:$PATH"
