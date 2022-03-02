@@ -1,5 +1,8 @@
 # .bashrc
 
+set -o vi
+bind 'set show-mode-in-prompt on'
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
