@@ -43,11 +43,11 @@ bindsym --locked XF86MonBrightnessUp exec $brightness_up
 
 bindsym --locked XF86MonBrightnessDown exec $brightness_down
 
-bindsym --locked XF86AudioPlay exec playerctl play-pause
+# bindsym --locked XF86AudioPlay exec playerctl play-pause
 
-bindsym XF86AudioNext exec playerctl next
+# bindsym XF86AudioNext exec playerctl next
 
-bindsym XF86AudioPrev exec playerctl previous
+# bindsym XF86AudioPrev exec playerctl previous
 
 bindsym XF86Search exec $menu
 
