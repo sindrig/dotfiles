@@ -4,10 +4,9 @@ set -euo pipefail
 export BROWSER=firefox
 
 customer=${1:-syndis}
-ecr_region=eu-west-1
 case $customer in
     syndis)
-        envs=('prod' 'dev' 'heimdallr' 'shared')
+        envs=('prod' 'dev' 'heimdallr' 'shared' 'build' 'vikingr' 'sindri-sandbox')
         ;;
     *)
         echo "Unknown customer $customer"
@@ -37,5 +36,6 @@ done
 
 echo "Finished all logins"
 sharedaccountid=$(aws sts get-caller-identity --profile=$customer-shared --query=Account --output=text)
-aws ecr get-login-password --profile=$customer-shared | docker login --username AWS --password-stdin $sharedaccountid.dkr.ecr.$ecr_region.amazonaws.com
+aws ecr get-login-password --profile=$customer-shared --region eu-west-1 | docker login --username AWS --password-stdin $sharedaccountid.dkr.ecr.eu-west-1.amazonaws.com
+aws ecr get-login-password --profile=$customer-shared --region us-east-1 | docker login --username AWS --password-stdin $sharedaccountid.dkr.ecr.us-east-1.amazonaws.com
 echo

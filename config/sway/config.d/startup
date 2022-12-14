@@ -15,4 +15,3 @@ exec --no-startup-id subl
 exec mkfifo $wobsock && tail -f $wobsock | wob
 exec way-displays > /tmp/way-displays.${XDG_VTNR}.${USER}.log 2>&1
 exec $idle
-exec safeeyes

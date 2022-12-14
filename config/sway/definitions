@@ -51,7 +51,7 @@ set $notifications mako --font "$term-font" --text-color "$text-color" --border-
 set $idle swayidle -w \
     timeout 240 'light -G > /tmp/brightness && light -S 10' resume 'light -S $([ -f /tmp/brightness ] && cat /tmp/brightness || echo 100%)' \
     timeout 300 'exec $locking' \
-    timeout 600 'systemctl suspend' \
+    timeout 1800 'systemctl suspend' \
     before-sleep 'playerctl pause' \
     before-sleep 'exec $locking'
 
