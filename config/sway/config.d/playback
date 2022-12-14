@@ -1,6 +1,9 @@
 bindsym F10 exec spt playback -p
+bindsym XF86AudioPrev exec spt playback -p
 bindsym F11 exec spt playback -n
+bindsym XF86AudioNext exec spt playback -n
 bindsym F12 exec spt playback -t
+bindsym XF86AudioPlay exec spt playback -t
 bindsym $mod+F10 exec swaymsg '[app_id=spotify]' scratchpad show
 bindsym $mod+F11 exec systemctl restart spotifyd --user
 bindsym $mod+F12 exec spt playback --transfer Sindri-laptop
