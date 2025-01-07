@@ -6,7 +6,7 @@ export BROWSER=firefox
 customer=${1:-syndis}
 case $customer in
     syndis)
-        envs=('prod' 'dev' 'heimdallr' 'shared' 'build' 'vikingr' 'sindri-sandbox')
+        envs=('prod' 'dev' 'heimdallr' 'shared' 'build' 'sandbox')
         ;;
     *)
         echo "Unknown customer $customer"

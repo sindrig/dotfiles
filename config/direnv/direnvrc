@@ -16,7 +16,7 @@ legacy_layout_python() {
 
   VIRTUAL_ENV=$(direnv_layout_dir)/../venv
   export VIRTUAL_ENV
-  
+
   if [[ ! -d $VIRTUAL_ENV ]]; then
     virtualenv "--python=$python" "$@" "$VIRTUAL_ENV"
   fi
@@ -40,8 +40,37 @@ export_function() {
 
 aws-sso-login() {
   # TEMP:
-  export BROWSER=firefox-beta
+  export BROWSER=firefox
   local PROFILE=$1
   aws sts get-caller-identity --profile $PROFILE > /dev/null || aws-sso-util login --profile $PROFILE > /dev/null
   eval $(aws-export-credentials --profile $PROFILE --env-export)
+}
+
+layout_poetry() {
+  if [[ ! -f pyproject.toml ]]; then
+    log_error 'No pyproject.toml found.  Use `poetry new` or `poetry init` to create one first.'
+    exit 2
+  fi
+
+  local VENV=$(dirname $(poetry run which python))
+  export VIRTUAL_ENV=$(echo "$VENV" | rev | cut -d'/' -f2- | rev)
+  export POETRY_ACTIVE=1
+  PATH_add "$VENV"
+}
+
+layout_uv() {
+    if [[ ! -z $UV_ACTIVE ]]; then
+        return
+    fi
+
+    export VIRTUAL_ENV="$(pwd)/.venv"
+
+    PATH_add "$VIRTUAL_ENV/bin"
+
+    if [[ ! -d $VIRTUAL_ENV ]]; then
+        log_status "No virtual environment exists. Executing \`uv venv\` to create one."
+        uv venv
+    fi
+
+    export UV_ACTIVE=1
 }

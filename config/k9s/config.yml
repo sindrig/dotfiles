@@ -1,12 +1,22 @@
 k9s:
+  liveViewAutoRefresh: false
   refreshRate: 2
   maxConnRetry: 5
   enableMouse: false
+  enableImageScan: false
   headless: false
   logoless: false
   crumbsless: false
   readOnly: false
+  noExitOnCtrlC: false
   noIcons: false
+  shellPod:
+    image: busybox:1.35.0
+    namespace: default
+    limits:
+      cpu: 100m
+      memory: 100Mi
+  skipLatestRevCheck: false
   logger:
     tail: 100
     buffer: 5000
@@ -14,28 +24,24 @@ k9s:
     fullScreenLogs: false
     textWrap: false
     showTime: false
-  currentContext: do-fra1-switchpoint-sandbox
-  currentCluster: do-fra1-switchpoint-sandbox
+  currentContext: arn:aws:eks:eu-west-1:004997773360:cluster/burp-eks
+  currentCluster: arn:aws:eks:eu-west-1:004997773360:cluster/burp-eks
+  keepMissingClusters: false
   clusters:
-    do-fra1-switchpoint-sandbox:
+    arn:aws:eks:eu-west-1:004997773360:cluster/burp-eks:
       namespace:
-        active: production
+        active: default
+        lockFavorites: false
         favorites:
-        - production
-        - sandbox
+        - cluster-autoscaler
+        - kube-system
+        - burp
+        - all
         - default
       view:
-        active: configmap
+        active: node
       featureGates:
         nodeShell: false
-      shellPod:
-        image: busybox:1.31
-        command: []
-        args: []
-        namespace: default
-        limits:
-          cpu: 100m
-          memory: 100Mi
       portForwardAddress: localhost
   thresholds:
     cpu:
@@ -45,3 +51,4 @@ k9s:
       critical: 90
       warn: 70
   screenDumpDir: /tmp/k9s-screens-sindri
+  disablePodCounting: false

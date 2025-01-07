@@ -1,11 +1,3 @@
-output * bg /usr/share/backgrounds/default.png fill
-
-bar {
-    swaybar_command waybar
-    pango_markup enabled
-}
-
-
 include definitions
 include theme
 include /etc/sway/config.d/*

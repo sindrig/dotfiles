@@ -1,13 +1,14 @@
 # based on Base16 Seti UI
 # Author: Appelgriebsch
 
+exec_always ~/.config/sway/scripts/import-gsettings
 
 # some global theme specific variables
 set $gtk-theme Matcha-dark-sea
 set $icon-theme Papirus-Dark-Maia
 set $cursor-theme xcursor-breeze
-set $gui-font Inconsolata  11
-set $term-font Inconsolata 12
+set $gui-font Inconsolata  10
+set $term-font Inconsolata 10
 set $kvantum-theme Matchama-Dark
 
 set $color0  #141a1b
@@ -44,3 +45,12 @@ client.unfocused        $color1 $color0 $color5 $color1 $color1
 client.urgent           $color8 $color8 $color0 $color8 $color8
 client.placeholder      $color0 $color0 $color5 $color0 $color0
 client.background       $color7
+
+bar {
+    swaybar_command waybar
+}
+
+default_border pixel 1
+
+# Default Font
+font pango:Noto Sans Regular 10

@@ -1,0 +1,74 @@
+# dynamic_padding = true
+live_config_reload = true
+# "window.opacity" = 1.0
+
+[colors.bright]
+black = "#4c566a"
+blue = "#81a1c1"
+cyan = "#8fbcbb"
+green = "#8fbcbb"
+magenta = "#d2b8ed"
+red = "#bf616a"
+white = "#d8dee9"
+yellow = "#fbdf90"
+
+[colors.cursor]
+cursor = "#d8dee9"
+text = "#2e3440"
+
+[colors.dim]
+black = "#373e4d"
+blue = "#68809a"
+cyan = "#6d96a5"
+green = "#809575"
+magenta = "#8c738c"
+red = "#94545d"
+white = "#aeb3bb"
+yellow = "#b29e75"
+
+[colors.footer_bar]
+background = "#434c5e"
+foreground = "#d8dee9"
+
+[colors.normal]
+black = "#434c5e"
+blue = "#81a1c1"
+cyan = "#88c0d0"
+green = "#98c379"
+magenta = "#b48ead"
+red = "#f9929b"
+white = "#d8dee9"
+yellow = "#ebcb8b"
+
+[colors.primary]
+background = "#282c34"
+dim_foreground = "#282c34"
+foreground = "#d8dee9"
+
+[colors.search.matches]
+background = "#88c0d0"
+foreground = "CellBackground"
+
+[colors.selection]
+background = "#4c566a"
+text = "CellForeground"
+
+[colors.vi_mode_cursor]
+cursor = "#d8dee9"
+text = "#2e3440"
+
+[font]
+size = 12
+
+[font.normal]
+family = "JetbrainsMonoNL"
+style = "Regular"
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "Return"
+mods = "Control|Shift"
+
+[window.padding]
+x = 20
+y = 20
