@@ -40,8 +40,8 @@ shopt -s histappend
 export EDITOR=/usr/bin/vim
 export VISUAL=$EDITOR
 alias vim=$EDITOR
-export BROWSER=/usr/bin/google-chrome-stable
-# export BROWSER=/usr/bin/firefox-beta
+# export BROWSER=/usr/bin/google-chrome-stable
+export BROWSER=/usr/bin/firefox
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then

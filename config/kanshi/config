@@ -2,7 +2,7 @@ profile {
 	output eDP-1 mode 3840x2160 position 2560,0
 	output "Lenovo Group Limited T27hv-20 V306MXG0" mode 2560x1440 position 0,0
 
-	exec makoctl set-mode default
+	exec makoctl mode -t default
 }
 
 profile {
@@ -10,19 +10,27 @@ profile {
 	output "Lenovo Group Limited LEN S28u-10 VNA61CZ5" mode 3840x2160 position 2160,0
 	output "Lenovo Group Limited LEN S28u-10 VNA61CZ9" mode 3840x2160 position 0,0 transform 270
 
-	exec makoctl set-mode default
+	exec makoctl mode -t default
 }
 
 profile {
 	output eDP-1 mode 3840x2160 position 0,0
 
-	exec makoctl set-mode default
+	exec makoctl mode -t default
 }
 
 profile {
 	output eDP-1 mode 3840x2160 position 1920,0 scale 2
 	output "Dell Inc. DELL U2421E 2CQHW13" mode 1920x1200 position 0,0
 
-	exec makoctl set-mode default
+	exec makoctl mode -t default
+}
+
+
+profile {
+	output eDP-1 mode 3840x2160 position 2560,0 scale 2
+	output "Lenovo Group Limited T27h-30 V5NXY761" mode 2560x1440 position 0,0
+
+	exec makoctl mode -t default
 }
 
