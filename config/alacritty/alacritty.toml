@@ -59,7 +59,8 @@ text = "#2e3440"
 size = 12
 
 [font.normal]
-family = "JetbrainsMonoNL"
+# family = "JetbrainsMonoNL"
+family = "Inconsolata"
 style = "Regular"
 
 [[keyboard.bindings]]

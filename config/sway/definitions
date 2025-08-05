@@ -10,10 +10,11 @@ set $right l
 # onscreen bar
 set $onscreen_bar bash /usr/share/sway/scripts/wob.sh "$accent-colorFF" "$background-colorFF"
 
-# brightness control
-set $brightness_step bash -c 'echo $(( $(light -Mr) / 100 * 5 < 1 ? 1 : $(( $(light -Mr) / 100 * 5 )) ))'
-set $brightness_up light -r -A $($brightness_step) && light -G | cut -d'.' -f1 > $wobsock
-set $brightness_down light -r -U $($brightness_step) && light -G | cut -d'.' -f1 > $wobsock
+# Increase brightness
+set $brightness_up brightnessctl s +5% -m | cut -d, -f4 | tr -d '%' > $wobsock
+
+# Decrease brightness
+set $brightness_down brightnessctl s 5%- -m | cut -d, -f4 | tr -d '%' > $wobsock
 
 # WOB socket
 set $wobsock $XDG_RUNTIME_DIR/wob.sock

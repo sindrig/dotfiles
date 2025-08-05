@@ -42,8 +42,8 @@ aws-sso-login() {
   # TEMP:
   export BROWSER=firefox
   local PROFILE=$1
-  awsv2 sts get-caller-identity --profile $PROFILE > /dev/null || aws-sso-util login --profile $PROFILE > /dev/null
-  eval $(awsv2 configure export-credentials --profile $PROFILE --format=env)
+  aws sts get-caller-identity --profile $PROFILE > /dev/null || aws-sso-util login --profile $PROFILE > /dev/null
+  eval $(aws configure export-credentials --profile $PROFILE --format=env)
 }
 
 layout_poetry() {

@@ -27,4 +27,3 @@ if [ -d ~/.bashrc.d ]; then
 fi
 
 unset rc
-source /etc/profile.d/google-cloud-cli.sh

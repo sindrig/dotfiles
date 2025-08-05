@@ -1,0 +1,10 @@
+[Unit]
+Description=Run checkupdates-notify every hour
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1h
+Unit=checkupdates-notify.service
+
+[Install]
+WantedBy=timers.target
