@@ -9,6 +9,9 @@ exec --no-startup-id subl
 exec --no-startup-id nm-applet --indicator
 exec --no-startup-id kanshi
 
+exec eval $(gnome-keyring-daemon --start)
+exec export SSH_AUTH_SOCK
+
 exec mkfifo $wobsock && tail -f $wobsock | wob
 # exec way-displays > /tmp/way-displays.${XDG_VTNR}.${USER}.log 2>&1
 exec $idle
