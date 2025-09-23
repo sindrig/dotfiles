@@ -3,9 +3,9 @@ set -euxo pipefail
 
 export BROWSER=firefox
 
-customer=${1:-syndis}
+customer=${1:-aftra}
 case $customer in
-    syndis)
+    aftra)
         envs=('prod' 'dev' 'heimdallr' 'shared' 'build' 'sandbox')
         ;;
     *)
@@ -15,16 +15,16 @@ case $customer in
 esac
 
 i=$envs
-aws-sso-util login --profile $customer-${i}
+uvx aws-sso-util login --profile $customer-${i}
 if ! aws sts get-caller-identity --profile $customer-${i}; then
 	rm -rf ~/.aws/sso/cache/*.json
-	aws-sso-util login --profile $customer-${i}
+	uvx aws-sso-util login --profile $customer-${i}
 fi
 envs=("${envs[@]:1}")
 
 pids=()
 for i in ${envs[*]}; do
-    aws-sso-util login --profile $customer-${i} &
+    uvx aws-sso-util login --profile $customer-${i} &
     pids+=($!)
 done
 

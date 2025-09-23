@@ -10,14 +10,15 @@ set $right l
 # onscreen bar
 set $onscreen_bar bash /usr/share/sway/scripts/wob.sh "$accent-colorFF" "$background-colorFF"
 
+# WOB socket
+set $wobsock $XDG_RUNTIME_DIR/wob.sock
+
 # Increase brightness
 set $brightness_up brightnessctl s +5% -m | cut -d, -f4 | tr -d '%' > $wobsock
 
 # Decrease brightness
 set $brightness_down brightnessctl s 5%- -m | cut -d, -f4 | tr -d '%' > $wobsock
 
-# WOB socket
-set $wobsock $XDG_RUNTIME_DIR/wob.sock
 
 # audio control
 set $sink_volume pactl get-sink-volume @DEFAULT_SINK@ | grep '^Volume:' | cut -d / -f 2 | tr -d ' ' | sed 's/%//'
