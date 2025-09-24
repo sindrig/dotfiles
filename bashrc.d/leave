@@ -24,7 +24,8 @@ function leave() {
       )
     fi
   done
-  read -rp "Type 'l' to lock and suspend: " lock
+  read -rp "Type 'l' or <CR> to lock and suspend: " lock
+  lock=${lock:-l}
   if [[ $lock == "l" ]]; then
     loginctl lock-session
     systemctl suspend
