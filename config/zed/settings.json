@@ -45,5 +45,14 @@
         }
       ]
     }
-  }
+  },
+  "lsp": {
+    "terraform-ls": {
+      "initialization_options": {
+        "experimentalFeatures": {
+          "prefillRequiredFields": true
+        }
+      }
+    }
+  } 
 }
