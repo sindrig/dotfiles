@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+function leave() {
+  local DIRS
+  DIRS=$(find ~/dev -maxdepth 1 -mindepth 1 -type d)
+  for d in $DIRS; do
+    if [ -d "$d/.git" ]; then
+      (
+        cd "$d" || exit
+        if ! git diff --quiet || ! git diff --cached --quiet || [[ -n $(git status --porcelain | grep '^??') ]]; then
+          echo "Repo $d is dirty."
+          read -rp "Open nvim here? (Y/n): " ans
+          ans=${ans:-y}
+          if [[ $ans == [Yy]* ]]; then
+            nvim
+          fi
+        fi
+      )
+    fi
+  done
+  read -rp "Type 'l' to lock and suspend: " lock
+  if [[ $lock == "l" ]]; then
+    loginctl lock-session
+    systemctl suspend
+    exit
+  fi
+}
