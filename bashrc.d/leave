@@ -7,7 +7,7 @@ function leave() {
     if [ -d "$d/.git" ]; then
       (
         cd "$d" || exit
-        if ! git diff --quiet || ! git diff --cached --quiet || [[ -n $(git status --porcelain | grep '^??') ]]; then
+        if ! git diff --quiet || ! git diff --cached --quiet || [[ -n $(git status --porcelain | grep '^??') ]] || [[ $(git rev-list --count @{u}..HEAD 2>/dev/null) -gt 0 ]]; then
           echo "Repo $d is dirty."
           read -rp "Open nvim here? (Y/n): " ans
           ans=${ans:-y}
