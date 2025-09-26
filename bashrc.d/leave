@@ -32,3 +32,17 @@ function leave() {
     exit
   fi
 }
+
+function home() {
+  DIRS=$(find ~/dev -maxdepth 1 -mindepth 1 -type d)
+  for d in $DIRS; do
+    if [ -d "$d/.git" ]; then
+      (
+        cd "$d" || exit
+        git pull
+      ) &
+    fi
+  done
+  wait
+
+}
