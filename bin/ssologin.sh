@@ -6,7 +6,7 @@ export BROWSER=firefox
 customer=${1:-aftra}
 case $customer in
     aftra)
-        envs=('prod' 'dev' 'heimdallr' 'shared' 'build' 'sandbox')
+        envs=('prod' 'dev' 'heimdallr' 'shared' 'build' 'sandbox' 'acunetix')
         ;;
     *)
         echo "Unknown customer $customer"
