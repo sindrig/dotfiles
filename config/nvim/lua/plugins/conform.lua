@@ -4,6 +4,8 @@ return {
     opts = {
       formatters_by_ft = {
         python = { "ruff_fix", "ruff_format" },
+        typescript = { "prettier" },
+        vue = { "prettier" },
       },
       formatters = {
         ruff_fix = {
