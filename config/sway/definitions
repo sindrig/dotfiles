@@ -88,7 +88,7 @@ set $ws9 number 9
 set $ws10 number 10
 
 # screenshot
-set $grimshot /home/sindri/bin/grimshot
+set $grimshot sh -c 'command -v grimshot >/dev/null 2>&1 && grimshot "$@" || /home/sindri/bin/grimshot "$@"' --
 set $image_upload /home/sindri/bin/upload-image.sh
 set $screenshot_screen_clipboard $grimshot --notify copy output
 set $screenshot_screen_file $grimshot --notify save output
