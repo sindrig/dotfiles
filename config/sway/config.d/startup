@@ -1,11 +1,9 @@
 for_window [title=TeamViewer] floating enable
 
 assign [app_id="firefox"] workspace $ws2
-assign [app_id="sublime_text"] workspace $ws4
 
 exec --no-startup-id slack  # --enable-features=WebRTCPipeWireCapturer
 exec --no-startup-id firefox
-exec --no-startup-id subl
 exec --no-startup-id nm-applet --indicator
 exec --no-startup-id kanshi
 
