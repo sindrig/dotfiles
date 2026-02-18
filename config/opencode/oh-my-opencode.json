@@ -16,7 +16,7 @@
       "model": "github-copilot/claude-sonnet-4.5"
     },
     "hephaestus": {
-      "model": "github-copilot/gpt-5.3-codex"
+      "model": "github-copilot/gpt-5.2-codex"
     },
     "prometheus": {
       "model": "github-copilot/claude-opus-4.6"
@@ -48,10 +48,10 @@
       "model": "github-copilot/gemini-3-pro-preview"
     },
     "ultrabrain": {
-      "model": "github-copilot/gpt-5.3-codex"
+      "model": "github-copilot/gpt-5.2-codex"
     },
     "deep": {
-      "model": "github-copilot/gpt-5.3-codex"
+      "model": "github-copilot/gpt-5.2-codex"
     },
     "artistry": {
       "model": "github-copilot/gemini-3-pro-preview"
