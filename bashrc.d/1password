@@ -1,0 +1,1 @@
+export OP_BIOMETRIC_UNLOCK_ENABLED=true
