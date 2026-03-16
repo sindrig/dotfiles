@@ -2,6 +2,5 @@
   "plugin": [
     "oh-my-opencode"
   ],
-  "$schema": "https://opencode.ai/config.json",
-  "theme": "system"
+  "$schema": "https://opencode.ai/config.json"
 }

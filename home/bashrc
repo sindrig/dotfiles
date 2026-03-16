@@ -27,3 +27,6 @@ if [ -d ~/.bashrc.d ]; then
 fi
 
 unset rc
+
+# Share Cargo build artifacts across git worktrees
+export CARGO_TARGET_DIR="$HOME/.cargo/aftra-shared-target"

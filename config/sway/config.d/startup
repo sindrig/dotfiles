@@ -6,6 +6,8 @@ exec --no-startup-id slack  # --enable-features=WebRTCPipeWireCapturer
 exec --no-startup-id firefox
 exec --no-startup-id nm-applet --indicator
 exec --no-startup-id kanshi
+exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1
+exec --no-startup-id 1password
 
 exec eval $(gnome-keyring-daemon --start)
 exec export SSH_AUTH_SOCK
