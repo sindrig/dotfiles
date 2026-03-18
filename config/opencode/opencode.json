@@ -2,5 +2,11 @@
   "plugin": [
     "oh-my-opencode"
   ],
+  "mcp": {
+    "datadog": {
+      "type": "remote",
+      "url": "https://mcp.datadoghq.eu/api/unstable/mcp-server/mcp"
+    }
+  },
   "$schema": "https://opencode.ai/config.json"
 }
