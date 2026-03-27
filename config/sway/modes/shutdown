@@ -19,7 +19,7 @@ mode --pango_markup $mode_shutdown {
     bindsym e exec $purge_cliphist; exec loginctl terminate-user $USER
 
     # suspend
-    bindsym u mode "default", exec $locking && systemctl suspend
+    bindsym u mode "default", exec $locking & systemctl suspend
 
     # hibernate
     bindsym h mode "default", exec systemctl hibernate
