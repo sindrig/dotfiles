@@ -41,11 +41,12 @@ set $menu rofi -show combi -combi-modi "drun,run" -terminal $term -ssh-command "
 
 ### Lockscreen configuration
 # set $locking swaylock -c '#000000' --inside-color '#ff0000' -eFfkl
-set $locking swaylock \
-  -i eDP-1:~/.config/lockscreen/lock.jpg \
-  -c '#000000' \
-  --inside-color '#ff0000' \
-  -Ffkl
+# set $locking swaylock \
+#   -i eDP-1:~/.config/lockscreen/lock.jpg \
+#   -c '#000000' \
+#   --inside-color '#ff0000' \
+#   -eFfkl
+set $locking hyprlock
 
 ###Notification daemon configuration
 set $notifications mako --font "$term-font" --text-color "$text-color" --border-color "$accent-color" --background-color "$background-color" --border-size 3 --width 400 --height 200 --padding 20 --margin 20 --default-timeout 15000
