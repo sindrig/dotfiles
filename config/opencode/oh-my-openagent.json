@@ -72,5 +72,8 @@
   "git_master": {
     "commit_footer": false,
     "include_co_authored_by": false
+  },
+  "sisyphus_agent": {
+    "default_builder_enabled": true
   }
 }
