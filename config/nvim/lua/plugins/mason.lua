@@ -4,9 +4,9 @@ return {
     opts = {
       inlay_hints = { enabled = false },
       servers = {
-        pyright = false,
+        -- pyright = false,
         basedpyright = false,
-        -- ty = false,
+        ty = false,
         -- ty = {
         --   settings = {
         --     ty = {
