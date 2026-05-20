@@ -6,6 +6,13 @@
     "datadog": {
       "type": "remote",
       "url": "https://mcp.datadoghq.eu/api/unstable/mcp-server/mcp"
+    },
+    "playwright": {
+      "type": "local",
+      "command": [
+        "playwright-mcp",
+        "--headless"
+      ]
     }
   },
   "$schema": "https://opencode.ai/config.json"

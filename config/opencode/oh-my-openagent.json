@@ -31,7 +31,7 @@
       "model": "github-copilot/claude-sonnet-4.5"
     },
     "explore": {
-      "model": "github-copilot/grok-code-fast-1"
+      "model": "github-copilot/claude-haiku-4.5"
     },
     "metis": {
       "model": "github-copilot/claude-opus-4.6"

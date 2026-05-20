@@ -30,3 +30,6 @@ unset rc
 
 # Share Cargo build artifacts across git worktrees
 export CARGO_TARGET_DIR="$HOME/.cargo/aftra-shared-target"
+
+# Created by `userpath` on 2026-04-15 12:12:31
+export PATH="/home/dev/.local/bin:$PATH"
