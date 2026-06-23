@@ -1,7 +1,57 @@
 {
   "$schema": "https://unpkg.com/oh-my-opencode-slim@latest/oh-my-opencode-slim.schema.json",
-  "preset": "github-copilot",
+  "preset": "opencode-go",
   "presets": {
+    "opencode-go": {
+      "orchestrator": {
+        "model": "opencode-go/glm-5.2",
+        "skills": [
+          "*"
+        ],
+        "mcps": [
+          "*",
+          "!context7"
+        ]
+      },
+      "oracle": {
+        "model": "opencode-go/kimi-k2.7-code",
+        "variant": "high",
+        "skills": [
+          "simplify"
+        ],
+        "mcps": []
+      },
+      "librarian": {
+        "model": "opencode-go/qwen3.7-plus",
+        "variant": "low",
+        "skills": [],
+        "mcps": [
+          "websearch",
+          "context7",
+          "grep_app"
+        ]
+      },
+      "explorer": {
+        "model": "opencode-go/deepseek-v4-flash",
+        "variant": "low",
+        "skills": [],
+        "mcps": []
+      },
+      "designer": {
+        "model": "opencode-go/qwen3.6-plus",
+        "variant": "medium",
+        "skills": [
+          "agent-browser"
+        ],
+        "mcps": []
+      },
+      "fixer": {
+        "model": "opencode-go/mimo-v2.5-pro",
+        "variant": "low",
+        "skills": [],
+        "mcps": []
+      }
+    },
     "github-copilot": {
       "orchestrator": {
         "model": "github-copilot/claude-opus-4.8",
@@ -54,3 +104,4 @@
     }
   }
 }
+
