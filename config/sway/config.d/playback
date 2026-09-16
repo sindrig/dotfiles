@@ -9,7 +9,11 @@
 #bindsym $mod+F12 exec spt playback --transfer Sindri-laptop
 # bindsym F12 exec dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
 
-set $spotify_command "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
-bindsym F10 exec "$spotify_command"Previous
-bindsym F11 exec "$spotify_command"Next
-bindsym F12 exec "$spotify_command"PlayPause
+# set $spotify_command "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
+# bindsym F10 exec "$spotify_command"Previous
+# bindsym F11 exec "$spotify_command"Next
+# bindsym F12 exec "$spotify_command"PlayPause
+
+bindsym F10 exec playerctl next
+bindsym F11 exec playerctl previous
+bindsym F12 exec playerctl play-pause
