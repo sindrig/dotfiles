@@ -16,6 +16,7 @@
     "memory",
     "battery",
     "power-profiles-daemon",
+    "custom/ai-usage",
     "network",
     "pulseaudio",
     "tray",
@@ -138,6 +139,13 @@
     "exec-if": "exit 0",
     "on-click": "alacritty -e sudo pacman -Syu",
     "signal": 8
+  },
+  "custom/ai-usage": {
+    "exec": "ai-usagebar --vendor openai",
+    "return-type": "json",
+    "interval": 300,
+    "on-click": "alacritty -e ai-usagebar --vendor openai --watch 10",
+    "tooltip": true
   },
   "custom/power": {
     "format": "⏻",

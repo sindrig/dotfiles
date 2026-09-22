@@ -1,0 +1,12 @@
+[ui]
+primary = "openai"
+
+[anthropic]
+enabled = false
+
+[anthropic_api]
+enabled = false
+api_key_env = "ANTHROPIC_ADMIN_KEY"
+
+[openai]
+enabled = true
