@@ -1,7 +1,8 @@
 [Default Applications]
-x-scheme-handler/slack=slack.desktop
+application/xhtml+xml=firefox.desktop
+text/html=firefox.desktop
+video/mp4=firefox.desktop;vlc.desktop;
 x-scheme-handler/codex=chatgpt.desktop
 x-scheme-handler/http=firefox.desktop
 x-scheme-handler/https=firefox.desktop
-text/html=firefox.desktop
-application/xhtml+xml=firefox.desktop
+x-scheme-handler/slack=slack.desktop
